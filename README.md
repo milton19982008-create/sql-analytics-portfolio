@@ -1,6 +1,5 @@
 SQL Analytics & Data Engineering Practice
 
-
 SQL Skills: Querying & Analysis
 SELECT / WHERE | GROUP BY / HAVING | Subqueries | CTEs | Recursive CTEs | JOINs | UNION / UNION ALL
 
@@ -21,3 +20,5 @@ data_quality
 database_optimization
 
 data_warehouse
+
+[📥 Haz clic aquí para descargar SQL Data.txt](https://githubusercontent.com)
