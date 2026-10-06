@@ -1,0 +1,3775 @@
+SELECT DB_NAME() AS BaseActual;
+USE MyDatabase;
+USE SalesDB;
+USE DataWarehouse;
+SELECT *
+FROM customers;
+
+/* Find the average score ecah country
+   considering only customers with a score not equal to 0
+   and return only those contries with and average score score greater than 430
+*/
+
+SELECT
+	country,
+	AVG(score) AS avg_score
+FROM customers
+WHERE score != 0
+GROUP BY country
+HAVING AVG(score) > 430
+
+-- Return unique list of all countries
+
+SELECT DISTINCT id
+FROM customers
+
+-- Retrieve only 3 customers
+
+SELECT TOP 3 *
+FROM customers
+
+-- Retrieve top 3 customers with the highest scores
+
+SELECT TOP 3 *
+FROM customers
+ORDER BY score DESC
+
+-- Retrieve the lowest 2 customers based on the score
+
+SELECT TOP 2 *
+FROM customers
+ORDER BY score ASC
+
+-- Get the two most recent orders
+
+SELECT TOP 2 *
+FROM orders
+ORDER BY order_date DESC
+
+SELECT *
+FROM customers;
+
+SELECT *
+FROM orders;
+
+SELECT 123 AS static_number
+
+SELECT 'Hello' AS static_number
+
+SELECT
+id,
+first_name,
+'New Customer' AS customers_type
+FROM customers
+
+SELECT *
+FROM customers
+WHERE country = 'Germany'
+
+SELECT * FROM orders
+
+/* Create a new table called persons
+with columns: id, person_name, birth_date, and phone and actualizar la base de datos MyDatabase and ver tabla que cree le doy a dbo.persons - generar scrips de tabla - creat to */
+
+CREATE TABLE persons (
+	id INT NOT NULL,
+	person_name VARCHAR(50) NOT NULL,
+	birth_date DATE,
+	phone VARCHAR(15) NOT NULL,
+	CONSTRAINT pk_persons PRIMARY KEY (id)
+)
+
+SELECT * FROM persons
+
+-- Add a new column called email to the persons table
+
+ALTER TABLE persons
+ADD email VARCHAR(50) NOT NULL
+
+SELECT * FROM persons
+
+-- Remove the column phone from the persons table
+
+ALTER TABLE persons
+DROP COLUMN phone
+
+SELECT * FROM persons
+
+-- Add a new column called email to the persons table
+
+ALTER TABLE persons
+ADD email VARCHAR(50) NOT NULL
+
+SELECT * FROM persons
+
+-- Remove the column phone from the persons table
+
+ALTER TABLE persons
+DROP COLUMN phone
+
+SELECT * FROM persons
+
+-- Delete the table persons from de database
+
+DROP TABLE persons
+
+INSERT INTO customers (id, first_name, country, score)
+VALUES (6, 'Anna', 'USA', NULL),
+       (7, 'Sam', NULL, 100)
+SELECT * FROM customers
+
+INSERT INTO customers (id, first_name)
+VALUES (8, 'Andreas')
+SELECT * FROM customers
+
+-- Insert data from 'customers' into 'persons'
+INSERT INTO persons (id, person_name, birth_date, phone)
+SELECT
+id,
+first_name,
+NULL,
+'Unknown'
+FROM customers
+
+SELECT * FROM persons
+
+/* Change the score of customer 6 to 0 */
+
+UPDATE customers
+SET score = 0
+WHERE id = 6
+
+SELECT *
+FROM customers
+
+/* Change the score of customer 10 to 0
+	and update the country to UK */
+
+UPDATE customers
+SET score = 0,
+	country = 'UK'
+WHERE id = 10
+
+SELECT *
+FROM customers
+
+/* Update all customers with a NULL score
+	by settings their score to 0 */
+
+UPDATE customers
+SET score = 0
+WHERE score IS NULL
+
+SELECT *
+FROM customers
+WHERE score IS NULL
+
+-- Delete all customers whith and ID greater than 5.
+
+DELETE FROM customers
+WHERE id > 5
+
+SELECT *
+FROM customers
+
+-- Delete all data from table persons
+
+TRUNCATE TABLE persons
+
+-- Retrieve all customers from Germany
+SELECT *
+FROM customers
+WHERE country <> 'Germany'
+
+-- Retrieve all customers with a score greater than 500.
+
+SELECT *
+FROM customers
+WHERE score > 500
+
+-- Retrieve all customers with a score greater of 500 or more.
+
+SELECT *
+FROM customers
+WHERE score >= 500
+
+-- Retrieve all customers with a score less than 500.
+
+SELECT *
+FROM customers
+WHERE score < 500
+
+-- Retrieve all customers with a score of 500 or less.
+
+SELECT *
+FROM customers
+WHERE score <= 500
+
+/* Retrieve all customers who are from USA
+	and have a score greater than 500. */
+
+SELECT *
+FROM customers
+WHERE country = 'USA' AND score > 500
+
+-- Retrieve all customers with a score not less than 500
+
+SELECT
+*
+FROM customers
+WHERE NOT score >= 500
+
+/* Retrieve all customers whose score falls
+in the range between 100 and 500 */
+
+SELECT *
+FROM customers
+WHERE score BETWEEN 100 AND 500
+
+/* Retrieve all customers from
+   either Germnay and USA. */
+
+SELECT *
+FROM customers
+WHERE country = 'Germany' OR country = 'USA'
+
+SELECT *
+FROM customers
+WHERE country IN ('Germany', 'USA')
+
+-- Find all customers whose first name starts with 'M'
+
+SELECT *
+FROM customers
+WHERE first_name LIKE 'M%'
+
+-- Find all customers whose first name ends with 'n'
+
+SELECT *
+FROM customers
+WHERE first_name LIKE '%n'
+
+-- Find all customers whose first name contains	'r'
+
+SELECT *
+FROM customers
+WHERE first_name LIKE '%r%'
+
+/* Find all customers whose first name contains
+   has 'r' in the 3rd position */
+
+SELECT *
+FROM customers
+WHERE first_name LIKE '  r%'
+
+/* Retrieve all data from customers and orders
+   in two differents results NO JOIN */
+
+SELECT *
+FROM customers;
+
+SELECT *
+FROM orders;
+
+/* Get all customers along with their orders,
+   but only for customers who have placed an order INNER JOIN */
+
+SELECT *
+FROM customers
+INNER JOIN orders
+ON id = customer_id
+
+SELECT
+	c.id,
+	c.first_name,
+	o.order_id,
+	o.sales
+FROM customers AS c
+INNER JOIN orders AS o
+ON c.id = o.customer_id
+
+/* Get all customers along with their orders,
+   including those without orders LEFT JOIN */
+
+SELECT
+	c.id,
+	c.first_name,
+	o.order_id,
+	o.sales
+FROM customers AS c
+LEFT JOIN orders AS o
+ON c.id = o.customer_id
+
+/* Get all customers along with their orders,
+   including orders without matching customers RIGHT JOIN */
+
+SELECT
+	c.id,
+	c.first_name,
+	o.order_id,
+	o.sales
+FROM customers AS c
+RIGHT JOIN orders AS o
+ON c.id = o.customer_id
+
+/* Get all customers and all orders, even if ther's no match. FULL JOIN */
+
+SELECT
+	c.id,
+	c.first_name,
+	o.order_id,
+	o.sales
+FROM customers AS c
+FULL JOIN orders AS o
+ON c.id = o.customer_id
+
+
+/* Get all customers who haven't place any order. LEFT ANTI JOIN */
+
+SELECT *
+FROM customers AS c
+LEFT JOIN orders AS o
+ON c.id = o.customer_id
+WHERE o.customer_id IS NULL
+
+/* Get all orders without matching customer. RIGHT ANTI JOIN */
+
+SELECT *
+FROM customers AS c
+RIGHT JOIN orders AS o
+ON c.id = o.customer_id
+WHERE c.id IS NULL
+
+/* Find customers without orders and orders without customers FULL ANTI JOIN */
+
+SELECT *
+FROM orders AS o
+FULL JOIN customers AS c
+ON c.id = o.customer_id
+WHERE c.id IS NULL OR o.customer_id IS NULL
+
+/* Get all customers along with their orders,
+but only for costumers who have placed an order
+without using INNER JOIN!!. */
+
+SELECT *
+FROM customers AS c
+LEFT JOIN orders AS o
+ON c.id = o.customer_id
+WHERE o.customer_id IS NOT NULL
+
+/* Generate all possible combinations of customers and orders. CROSS JOIN */
+
+SELECT *
+FROM customers
+CROSS JOIN orders
+
+/* Task: Using SalesDb, Retrieve a list of all orders, along with the related customers, product
+and employee details. For each order, display:
+Order ID, Customer's name, Product name, Sales, Price, Sales person's name */
+
+SELECT
+	o.OrderID,
+	o.Sales,
+	c.FirstName AS CustomerFirstName,
+	c.LastName AS CustomerLastName,
+	p.Product AS ProductName,
+	p.Price,
+	e.FirstName AS EmployeeFirstName,
+	e.LastName AS EmployeeLastName
+FROM Sales.Orders AS o
+LEFT JOIN Sales.Customers AS c
+ON o.CustomerID = c.CustomerID
+LEFT JOIN Sales.Products AS p
+ON o.ProductID = p.ProductID
+LEFT JOIN Sales.Employees AS e
+ON o.SalesPersonID = e.EmployeeID
+
+SELECT * FROM Sales.Customers;
+
+SELECT * FROM Sales.Employees;
+
+SELECT * FROM Sales.Orders
+
+SELECT * FROM Sales.OrdersArchive;
+
+SELECT * FROM Sales.Products;
+
+/* RULES ORDER BY can be used only once, Same number of columuns, Matching data types, Same order of columuns,
+First query controls aliases and mapping correct columns */ 
+
+SELECT 
+FirstName,
+LastName
+FROM Sales.Customers
+
+UNION 
+
+SELECT 
+FirstName,
+LastName
+FROM Sales.Employees
+
+SELECT 
+CustomerID AS ID,
+LastName AS Last_Name
+FROM Sales.Customers
+
+UNION 
+
+SELECT 
+EmployeeID,
+LastName 
+FROM Sales.Employees
+
+-- Combine the data form employess and customers into one table
+
+SELECT 
+FirstName,
+LastName
+FROM Sales.Employees
+UNION
+SELECT 
+FirstName,
+LastName
+FROM Sales.Customers
+
+-- Combine the data form employess and customers into one table, including duplicates
+
+SELECT 
+FirstName,
+LastName
+FROM Sales.Employees
+UNION ALL
+SELECT 
+FirstName,
+LastName
+FROM Sales.Customers
+
+-- Find the empleyees who are not customers at the same time
+
+SELECT 
+FirstName,
+LastName
+FROM Sales.Employees
+EXCEPT 
+SELECT 
+FirstName,
+LastName
+FROM Sales.Customers
+
+-- Find the empleyees, who are also customers
+
+SELECT 
+FirstName,
+LastName
+FROM Sales.Customers
+INTERSECT  
+SELECT 
+FirstName,
+LastName
+FROM Sales.Employees
+
+-- Orders data are stored in separete tables (orders and OrdersArchive)
+-- Combine all orders data into one report without duplicates
+
+SELECT 
+'Orders' AS SourceTable
+,[OrderID]
+,[ProductID]
+,[CustomerID]
+,[SalesPersonID]
+,[OrderDate]
+,[ShipDate]
+,[OrderStatus]
+,[ShipAddress]
+,[BillAddress]
+,[Quantity]
+,[Sales]
+,[CreationTime]
+FROM Sales.Orders
+UNION 
+SELECT
+'OrdersArhive' AS SourceTable
+,[OrderID]
+,[ProductID]
+,[CustomerID]
+,[SalesPersonID]
+,[OrderDate]
+,[ShipDate]
+,[OrderStatus]
+,[ShipAddress]
+,[BillAddress]
+,[Quantity]
+,[Sales]
+,[CreationTime]
+FROM Sales.OrdersArchive
+ORDER BY OrderID
+
+-- Show a list customer' first names together with their country in one column.
+
+SELECT 
+First_name,
+country,
+CONCAT (first_name, '_', country) AS name_country
+FROM customers
+
+-- Transform the customer's first name to lowercase
+
+SELECT
+first_name,
+country,
+CONCAT (first_name, '_', country) AS name_country,
+LOWER (first_name) AS low_name,
+UPPER (first_name) AS up_name
+FROM customers
+
+-- Find customers whose first name contains leading or trailing spaces
+
+SELECT
+	first_name 
+FROM customers
+WHERE first_name != TRIM(first_name)
+
+SELECT
+	first_name, 
+	LEN(first_name) len_name,
+	LEN(TRIM(first_name)) len_trim_name,
+	LEN(first_name) - LEN(TRIM(first_name)) flag
+FROM customers
+WHERE LEN(first_name) != LEN(TRIM(first_name))
+
+-- Remove dashes (-) from a phone number
+
+SELECT
+'123-456-7890' AS phone,
+REPLACE ('123-456-7890', '-', '/') AS clean_phone
+
+-- Remove file extense from txt to csv
+
+SELECT
+'report.txt' AS old_filename,
+REPLACE('report.txt', '.txt', '.csv') AS new_filename
+
+-- Calculate the length or each customer´s first name
+
+SELECT
+first_name,
+LEN(first_name) AS len_name
+FROM customers
+
+-- Retrieve the first two characters of each first name
+
+SELECT
+	first_name,
+	LEFT(TRIM(first_name), 2) first_2_char
+FROM customers
+
+-- Retrieve the last two characters of each first name
+
+SELECT
+	first_name,
+	LEFT(TRIM(first_name), 2) first_2_char,
+	RIGHT(first_name, 2) last_2_char
+FROM customers
+
+-- Retrieve a list of customer's first name after removing the first character
+
+SELECT
+	first_name,
+	SUBSTRING(TRIM(first_name), 2, lEN(first_name)) AS sub_name
+FROM customers
+
+SELECT 
+3.516,
+ROUND(3.516, 2) AS round_2,
+ROUND(3.516, 1) AS round_1,
+ROUND(3.516, 0) AS round_0
+
+SELECT 
+-10,
+ABS(-10),
+ABS(10)
+
+SELECT
+OrderID,
+CreationTime,
+'2025-08-20' HardCoded,
+GETDATE() Today
+FROM Sales.Orders
+
+SELECT
+OrderID,
+CreationTime,
+-- DATATRUNC Examples
+DATETRUNC(year, CreationTime) Year_dt,
+DATETRUNC(day, CreationTime) Day_dt,
+DATETRUNC(minute, CreationTime) Minute_dt,
+-- DATENAME Examples
+DATENAME(month, CreationTime) Month_dn,
+DATENAME(weekday, CreationTime) Weekday_dn,
+DATENAME(day, CreationTime) Day_dn,
+DATENAME(year, CreationTime) Year_dn,
+-- DATEPART Examples
+DATEPART(year, CreationTime) Year_dp,
+DATEPART(month, CreationTime) Month_dp,
+DATEPART(day, CreationTime) Day_dp,
+DATEPART(hour, CreationTime) Hour_dp,
+DATEPART(quarter, CreationTime) Quarter_dp,
+DATEPART(week, CreationTime) Week_dp,
+YEAR(CreationTime) Year,
+MONTH(CreationTime) Month,
+DAY(CreationTime) Day
+fROM Sales.Orders	
+
+SELECT 
+DATETRUNC(year,CreationTime) Creation,
+COUNT(*)
+FROM Sales.Orders
+GROUP BY DATETRUNC(year,CreationTime)
+
+SELECT 
+OrderID,
+CreationTime,
+EOMONTH(CreationTime) EndOfMonth,
+CAST(DATETRUNC(month, CreationTime) AS DATE) StartOfMonth
+FROM Sales.Orders
+
+-- How many orders were placed each year?
+
+SELECT
+YEAR(OrderDate),
+COUNT (*) NrOfOrders
+FROM Sales.Orders
+GROUP BY YEAR(OrderDate)
+
+SELECT
+DATENAME(month, OrderDate) AS OrderDate,
+COUNT (*) NrOfOrders
+FROM Sales.Orders
+GROUP BY DATENAME(month, OrderDate)
+
+-- Show all orders that were placed during the month of February
+
+SELECT
+*
+FROM Sales.Orders
+WHERE MONTH(OrderDate) = 2
+
+-- All possible parts can be used in DATAPART SQL Function
+
+SELECT 
+	'Year' AS DatePart,
+	DATEPART(year, GETDATE()) AS DatePart_Output,
+	DATENAME(year, GETDATE()) AS DateName_Output,
+	DATETRUNC(year, GETDATE()) AS DateTrunc_Output
+UNION ALL
+SELECT 
+	'YY', 
+	DATEPART(yy, GETDATE()) AS DatePart_Output,
+	DATENAME(yy, GETDATE()) AS DateName_Output,
+	DATETRUNC(yy, GETDATE()) AS DateTrunc_Output
+
+SELECT
+OrderID,
+CreationTime,
+FORMAT(CreationTime, 'MM-dd-yyyy') USA_Format,
+FORMAT(CreationTime, 'dd-MM-yyyy') EURO_Format,
+FORMAT(CreationTime, 'dd') dd,
+FORMAT(CreationTime, 'ddd') ddd,
+FORMAT(CreationTime, 'dddd') dddd,
+FORMAT(CreationTime, 'MM') MM,
+FORMAT(CreationTime, 'MMM') MMM,
+FORMAT(CreationTime, 'MMMM') MMM
+FROM Sales.Orders
+
+-- Show CreationTime using the following format:
+-- Day Wed Jan Q1 2025 12:34:56 PM
+
+SELECT
+OrderID, 
+CreationTime,
+'Day' + FORMAT(CreationTime, 'dd MMMM') + 
+' Q' + DATENAME(quarter, CreationTime) + ' ' +
+FORMAT(CreationTime, 'yyyy hh:mm:ss tt') AS CustomeFormat
+FROM Sales.Orders
+
+SELECT
+FORMAT(OrderDate, 'MMM yy') OrderDate,
+COUNT(*)
+FROM Sales.Orders
+GROUP BY FORMAT(OrderDate, 'MMM yy')
+
+SELECT
+	'ff',
+	FORMAT(GETDATE(), 'ff'),
+	'Hundredths of second'
+UNION ALL
+SELECT 
+	'fff',
+	FORMAT(GETDATE(), 'ffF'),
+	'Milliseconds'
+
+-- All numeric format specifiers can be used in FORMAT SQL Function
+
+SELECT 'N' AS FormatType, FORMAT(1.23456, 'N') AS FormatteValue 
+UNION ALL
+SELECT 'P' AS FormatType, FORMAT(1.23456, 'P') AS FormatteValue 
+UNION ALL
+SELECT 'C' AS FormatType, FORMAT(1.23456, 'C') AS FormatteValue 
+UNION ALL
+SELECT 'E' AS FormatType, FORMAT(1.23456, 'E') AS FormatteValue 
+UNION ALL
+SELECT 'F' AS FormatType, FORMAT(1.23456, 'F') AS FormatteValue 
+UNION ALL
+SELECT 'N0' AS FormatType, FORMAT(1.23456, 'N0') AS FormatteValue 
+
+SELECT
+CONVERT(INT, '123') AS [String to Int CONVERT],
+CONVERT(DATE, '2025-08-20') AS [String to Date CONVERT],
+CreationTime,
+CONVERT(DATE, CreationTime) AS [DateTime to Date CONVERT]
+FROM Sales.Orders
+
+SELECT
+CreationTime,
+CONVERT(DATE, CreationTime) AS [DateTime to Date CONVERT],
+CONVERT(VARCHAR, CreationTime, 32) AS [USA Std. Style:32],
+CONVERT(VARCHAR, CreationTime, 34) AS [USA Std. Style:34]
+FROM Sales.Orders
+
+SELECT 'ru-RU' AS CultureCode,
+	   FORMAT(1234567.89, 'N', 'ru-RU') AS FormattedNumber,
+	   FORMAT(GETDATE(), 'D', 'ru-RU') AS FormattedDate
+UNION ALL
+SELECT 'ar-SA' AS CultureCode,
+	   FORMAT(1234567.89, 'N', 'ar-SA') AS FormattedNumber,
+	   FORMAT(GETDATE(), 'D', 'ar-SA') AS FormattedDate
+UNION ALL
+SELECT 'el-GR' AS CultureCode,
+	   FORMAT(1234567.89, 'N', 'el-GR') AS FormattedNumber,
+	   FORMAT(GETDATE(), 'D', 'el-GR') AS FormattedDate
+
+SELECT
+CAST('123' AS INT) AS [String to Int],
+CAST(123 AS VARCHAR) AS [Int to String],
+CAST('2025-08-20' AS DATE) AS [String to Date],
+CAST('2025-08-20' AS DATETIME2) AS [String to DateTime],
+CreationTime,
+CAST(CreationTime AS DATE) AS [Datetime to Date]
+FROM Sales.Orders
+
+SELECT
+OrderID,
+OrderDate,
+DATEADD(day, -10, OrderDate) AS TenDaysBefore,
+DATEADD(month, 3, OrderDate) AS ThreeMonthsLater,
+DATEADD(year, 2, OrderDate) AS TwoYearsLater
+FROM Sales.Orders
+
+-- Calculate the age of Employess
+
+SELECT
+EmployeeID,
+BirthDate,
+DATEDIFF(year, BirthDate, GETDATE()) Age
+FROM Sales.Employees
+
+-- Find the average shipping duration in days for each month
+
+SELECT
+OrderID,
+OrderDate,
+ShipDate,
+DATEDIFF(day, OrderDate, ShipDate) Day2Ship
+FROM Sales.Orders
+
+SELECT
+MONTH(OrderDate) AS OrderDate,
+AVG(DATEDIFF(day, OrderDate, ShipDate)) AvgShip
+FROM Sales.Orders
+GROUP BY MONTH(OrderDate)
+
+-- Time Gap Analysis
+-- Find the number of days between each order and the previous order
+
+SELECT
+OrderID,
+OrderDate CurrentOrderDate,
+LAG(OrderDate) OVER (ORDER BY OrderDate) PreviousOrderDate,
+DATEDIFF(day, LAG(OrderDate) OVER (ORDER BY OrderDate), OrderDate)NrOfDays
+FROM Sales.Orders
+
+SELECT
+ISDATE('123') DateCheck1,
+ISDATE('2025-08-20') DateCheck2,
+ISDATE('20-08-2025') DateCheck3,
+ISDATE('2025') DateCheck4,
+ISDATE('08') DateCheck5
+
+SELECT
+	-- Cast(OrderDate AS Date) OrderDate,
+	OrderDate,
+	ISDATE(OrderDate),
+	CASE WHEN ISDATE(OrderDate) = 1 THEN CAST(OrderDate AS Date)
+		 ELSE '9999-01-01'
+	END NewOrderDate
+FROM
+(
+	SELECT '2025-08-20' AS OrderDate UNION
+	SELECT '2025-08-21' UNION
+	SELECT '2025-08-23' UNION
+	SELECT '2025-08'
+)t
+-- WHERE ISDATE(OrderDate) = 0
+
+-- Find the average scores of the customers
+
+SELECT
+CustomerID,
+Score,
+COALESCE(Score,0) Score2,
+AVG(Score) OVER () AvgScores,
+AVG(COALESCE(Score,0)) OVER() AvgScores2
+From Sales.Customers
+
+-- Display the full name of customers in a single field
+-- by merging their first and last names,
+-- and add 10 bonus point to each customer's score
+
+SELECT
+CustomerID,
+FirstName,
+LastName,
+FirstName + ' ' + COALESCE(LastName, '') AS FullName,
+Score,
+COALESCE(Score, 0) + 10 AS ScoreWithBonus
+FROM Sales.Customers
+
+-- Sort the customers from lowest to highest scores,
+-- with nulls appearing last
+
+SELECT
+CustomerID,
+Score,
+CASE WHEN Score IS NULL THEN 1 ELSE 0 END Flag
+FROM Sales.Customers
+ORDER BY CASE WHEN Score IS NULL THEN 1 ELSE 0 END, Score
+
+-- Find the sales price for each order by dividing sales by quantity
+
+SELECT
+OrderID,
+Sales,
+Quantity,
+Sales / NULLIF(Quantity,0) AS Price
+FROM Sales.Orders
+
+-- Identify the customers who have no scores
+
+SELECT
+*
+FROM Sales.Customers
+WHERE Score IS NULL
+
+-- List all customers who have scores
+
+SELECT
+*
+FROM Sales.Customers
+WHERE Score IS NOT NULL
+
+-- list all details for customers who have not place any orders LEFT ANTI JOIN
+
+SELECT
+c.*,
+o.OrderID
+FROM Sales.Customers c
+LEFT JOIN Sales.Orders o
+ON c.CustomerID = o.CustomerID
+WHERE o.CustomerID IS NULL
+
+WITH Orders AS (
+SELECT 1 Id, 'A' Category UNION
+SELECT 2, NULL UNION
+SELECT 3, '' UNION
+SELECT 4, ' '
+)
+SELECT
+*,
+DATALENGTH(Category) CategoryLen
+FROM Orders
+
+WITH Orders AS (
+SELECT 1 Id, 'A' Category UNION
+SELECT 2, NULL UNION
+SELECT 3, '' UNION
+SELECT 4, '  '
+)
+SELECT
+*,
+TRIM(Category) Policy1
+FROM Orders
+
+WITH Orders AS (
+SELECT 1 Id, 'A' Category UNION
+SELECT 2, NULL UNION
+SELECT 3, '' UNION
+SELECT 4, '  '
+)
+SELECT
+*,
+TRIM(Category) Policy1,
+NULLIF(TRIM(Category), '') Policy2
+FROM Orders
+
+WITH Orders AS (
+SELECT 1 Id, 'A' Category UNION
+SELECT 2, NULL UNION
+SELECT 3, '' UNION
+SELECT 4, '  '
+)
+SELECT
+*,
+TRIM(Category) Policy1,
+NULLIF(TRIM(Category), '') Policy2,
+COALESCE(NULLIF(TRIM(Category), '') , 'unknown') Policy3
+FROM Orders
+
+/* Create report showing total sales for each of the following categories:
+   High (sales over 50), Medium (sales 21-50), and Low (sales 20 or less)
+   Sort the categories from highest sales to lowest */
+
+SELECT
+Category,
+SUM(Sales) AS TotalSales
+FROM(	
+	SELECT
+	OrderID, 
+	Sales,
+	CASE 
+		WHEN Sales > 50 THEN 'High'
+		WHEN Sales > 20 THEN 'Medium'
+		ELSE 'low'
+	END Category
+	FROM Sales.Orders
+)t
+GROUP BY Category
+ORDER BY TotalSales DESC
+
+-- Retrieve employee details gender displayed as full text
+
+SELECT
+EmployeeID,
+FirstName,
+LastName,
+Gender,
+CASE
+	WHEN Gender = 'F' THEN 'Famale'
+	WHEN Gender = 'M' THEN 'Male'
+	ELSE 'Not Avaiable'
+END GenderFullText
+FROM Sales.Employees
+
+-- Retrieve customers details with abbreviated country code
+
+SELECT 
+	CustomerID, 
+	FirstName,
+	LastName,
+	Country,
+	CASE
+        WHEN Country = 'Germany' THEN 'DE'
+		WHEN Country = 'USA'	 THEN  'US'
+		ELSE 'n/a'
+	END CountryAbbr
+FROM Sales.Customers
+
+SELECT DISTINCT Country
+FROM Sales.Customers;
+
+-- Retrieve customers details with abbreviated country
+
+SELECT 
+	CustomerID,
+	FirstName,
+	LastName,
+	Country,
+	CASE
+		WHEN Country = 'Germany' THEN 'DE'
+		WHEN Country = 'USA'	 THEN 'US'
+		ELSE 'n/a'
+	END CountryAbbr,
+
+	CASE Country
+		WHEN 'Germany' THEN 'DE'
+		WHEN 'USA'	 THEN 'US'
+		ELSE 'n/a'
+	END CountryAbbr2
+
+FROM Sales.Customers
+
+-- Find the average scores of customers and treat Nulls as 0
+-- Additionally provide details such CustomerID and LastName
+
+SELECT
+CustomerID,
+LastName,
+Score,
+CASE
+	WHEN Score IS NULL THEN 0
+	ELSE Score
+END ScoreClean,
+
+AVG(CASE
+		WHEN Score IS NULL THEN 0
+		ELSE Score
+	END) OVER () AvgCustomerClean,
+
+AVG(Score) OVER() AvgCustomer
+FROM Sales.Customers
+
+-- Count how many times each customer has made an order with sales greater than 30
+
+SELECT
+	OrderID,
+	CustomerID,
+	Sales,
+	CASE
+		WHEN Sales > 30 THEN 1
+		ELSE 0
+	END SalesFlag
+FROM Sales.Orders
+ORDER BY CustomerID
+
+SELECT
+	CustomerID,
+	SUM(CASE
+		WHEN Sales > 30 THEN 1
+		ELSE 0
+	END) TotalOrdersHighSales,
+	COUNT(*) TotalOrders
+FROM Sales.Orders
+GROUP BY CustomerID
+
+-- Find the total number of orders
+
+SELECT
+COUNT(*) AS Total_nr_orders
+FROM orders
+
+-- Find the total sales of all orders
+
+SELECT
+COUNT(*) AS Total_nr_orders,
+SUM(Sales) AS total_sales
+FROM orders
+
+-- Find the average sales of all orders
+
+SELECT
+COUNT(*) AS Total_nr_orders,
+SUM(Sales) AS total_sales,
+AVG(Sales) AS avg_sales
+FROM orders
+
+-- Find the highest sales of all orders
+
+SELECT
+COUNT(*) AS Total_nr_orders,
+SUM(Sales) AS total_sales,
+AVG(Sales) AS avg_sales,
+MAX(Sales) AS highest_sales
+FROM orders
+
+-- Find the lowest sales of all orders
+
+SELECT
+customer_id,
+COUNT(*) AS Total_nr_orders,
+SUM(Sales) AS total_sales,
+AVG(Sales) AS avg_sales,
+MAX(Sales) AS highest_sales,
+MIN(Sales) AS lowest_sales
+FROM orders
+GROUP BY customer_id
+
+-- Find the total Sales Across all orders
+
+SELECT
+SUM(Sales) TotalSales
+FROM Sales.Orders
+
+/*Find the total Sales for each product
+Additionally provide details such order id, order date*/
+
+SELECT
+	OrderID,
+	OrderDate,
+	ProductID,
+	SUM(Sales) TotalSales
+FROM Sales.Orders
+GROUP BY 
+	OrderID,
+	OrderDate,
+	ProductID
+
+SELECT
+	OrderID,
+	OrderDate,
+	ProductID,
+	SUM(Sales) OVER(PARTITION BY ProductID) TotalSalesByProducts
+FROM Sales.Orders
+
+-- Find the total sales across all orders
+-- Additionally provide details such order Id, order date
+
+SELECT
+OrderID,
+OrderDate,
+SUM(Sales) OVER () TotalSales
+FROM Sales.Orders
+
+-- Find the total sales for each product
+-- Additionally provide details such order Id, order date
+
+SELECT
+OrderID,
+OrderDate,
+ProductID,
+SUM(Sales) OVER (PARTITION BY ProductID) TotalSales
+FROM Sales.Orders
+
+-- Find the total sales across all orders
+-- Find the total sales for each product
+-- Additionally provide details such order Id, order date
+
+SELECT
+OrderID,
+OrderDate,
+ProductID,
+Sales,
+SUM(Sales) OVER () Totalsales,
+SUM(Sales) OVER (PARTITION BY ProductID) TotalSalesByProductID
+FROM Sales.Orders
+
+-- Find the total sales across all orders
+-- Find the total sales for each product
+-- Find the total sales for each combination of product and order status
+-- Additionally provide details such order Id, order date
+
+SELECT
+OrderID,
+OrderDate,
+ProductID,
+Sales,
+SUM(Sales) OVER () Totalsales,
+SUM(Sales) OVER (PARTITION BY ProductID) TotalSalesByProductID,
+SUM(Sales) OVER (PARTITION BY ProductID, OrderStatus) SalesByProductIDAndStatus
+FROM Sales.Orders
+
+-- Rank each order based on their sales from highest to lowest
+-- Additionally provide details such order Id, order date
+
+SELECT
+	OrderID,
+	OrderDate,
+	Sales, 
+	RANK() OVER (ORDER BY Sales ASC) RankSales
+FROM Sales.Orders
+
+SELECT 
+OrderID,
+OrderDate,
+OrderStatus,
+Sales,
+SUM(Sales) OVER (PARTITION BY OrderStatus ORDER BY OrderDate
+ROWS BETWEEN CURRENT ROW AND 2 FOLLOWING) TotalSales
+FROM Sales.Orders
+
+SELECT 
+OrderID,
+OrderDate,
+OrderStatus,
+Sales,
+SUM(Sales) OVER (PARTITION BY OrderStatus ORDER BY OrderDate
+ROWS BETWEEN 2 PRECEDING AND CURRENT ROW) TotalSales
+FROM Sales.Orders
+
+SELECT 
+OrderID,
+OrderDate,
+OrderStatus,
+Sales,
+SUM(Sales) OVER (PARTITION BY OrderStatus ORDER BY OrderDate
+ROWS UNBOUNDED PRECEDING) TotalSales
+FROM Sales.Orders
+
+SELECT 
+OrderID,
+OrderDate,
+OrderStatus,
+Sales,
+SUM(Sales) OVER (PARTITION BY OrderStatus ORDER BY OrderDate
+ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) TotalSales
+FROM Sales.Orders
+
+SELECT
+	OrderID,
+	OrderDate,
+	OrderStatus,
+	Sales,
+	SUM(Sales) OVER (PARTITION BY OrderStatus) TotalSales
+FROM Sales.Orders
+ORDER BY SUM(Sales) OVER (PARTITION BY OrderStatus) DESC
+
+-- Rank Customers based on their total sales
+SELECT
+	CustomerID,
+	SUM(Sales) TotalSales,
+	RANK() OVER(ORDER BY SUM(Sales) DESC) RankCustomers
+FROM Sales.Orders
+GROUP BY CustomerID
+
+-- Find the total number of Orders
+-- Find the total number or Orders for each customers
+-- Additionally provide details such order Id, order date
+
+SELECT
+OrderID,
+OrderDate,
+CustomerID,
+COUNT(*) OVER() TotalOrders,
+COUNT(*) OVER(PARTITION BY CustomerID) OrderByCustomers
+FROM Sales.Orders
+
+-- Find the total number of customers
+-- Find the total number of scores for the customers
+-- Additionally provide All customers Dateils
+
+SELECT
+*,
+COUNT(*) OVER () TotalCustomerStar,
+COUNT(1) OVER () TotalCustomerOne,
+COUNT(Score) OVER() TotalScores,
+COUNT(Country) OVER() TotalCountries
+FROM Sales.Customers
+
+--check whether the table 'orders' contains any duplicate rows
+
+SELECT
+*
+FROM (
+	SELECT
+		OrderID,
+		COUNT(*) OVER (PARTITION BY OrderID) CheckPK
+	FROM Sales.OrdersArchive
+)t WHERE CheckPK > 1
+
+-- Find the total sales across all orders
+-- And the total sales for each product
+-- Additionally provide details such order Id, order date
+
+SELECT 
+	OrderID,
+	OrderDate,
+	Sales,
+	ProductID,
+	SUM(Sales) OVER () TotalSales,
+	SUM(Sales) OVER (PARTITION BY ProductID) SalesByProducts
+FROM Sales.Orders
+
+-- Find the percetage contribution of each product's sales to the total sales
+
+SELECT
+OrderID,
+ProductID,
+Sales,
+SUM(Sales) OVER () TotalSales,
+ROUND (CAST (Sales AS float) / SUM(Sales) OVER () * 100, 2) PercentageOfTotal
+FROM Sales.Orders
+
+-- Find the average sales across all orders
+-- And find average sales for each product
+-- Additionally provide details such order Id, order date
+
+SELECT
+	OrderID,
+	OrderDate,
+	Sales,
+	ProductID,
+	AVG(Sales) OVER () AvgSales,
+	AVG(Sales) OVER (PARTITION BY ProductID) AvgSalesByProducts
+FROM Sales.Orders
+
+-- Find the average scores of customers
+-- Additionally provide details such customerID and LastName
+
+SELECT
+	CustomerID,
+	LastName,
+	Score,
+	COALESCE(Score,0) CustomerScore,
+	AVG(Score) OVER () AvgScore,
+	AVG(COALESCE(Score,0)) OVER () AvgScoreWithoutNull
+FROM Sales.Customers
+
+-- Find all orders where sales are higher than the average sales across all orders
+
+SELECT
+*
+FROM(
+	SELECT
+		OrderID,
+		ProductID,
+		Sales,
+		AVG(Sales) OVER() AvgSales
+	FROM Sales.Orders
+)t WHERE Sales > AvgSales
+
+-- Find the highest and lowest sales of all orders
+-- Find the highest and lowest sales for each product
+-- Additionally provide details such order Id, order date
+
+SELECT
+	OrderID,
+	OrderDate,
+	ProductID,
+	Sales,
+	MAX(Sales) OVER() HighestSales,
+	MIN(Sales) OVER() LowestSales,
+	MAX(Sales) OVER(PARTITION BY ProductID) HighestSalesByProduct,
+	MIN(Sales) OVER(PARTITION BY ProductID) LowestSalesByProduct
+FROM Sales.Orders
+
+-- Show the employees who have the highest salaries+
+
+SELECT
+*,
+MAX(Salary) OVER() HighestSalary
+FROM Sales.Employees
+
+SELECT
+*
+FROM (
+	SELECT
+	*,
+	MAX(Salary) OVER() HighestSalary
+	FROM Sales.Employees
+)t WHERE Salary = HighestSalary
+
+-- Find the deviation of each sales from the minium and maximum sales amounts
+
+SELECT
+	OrderID,
+	OrderDate,
+	ProductID,
+	Sales,
+	MAX(Sales) OVER() HighestSales,
+	MIN(Sales) OVER() LowestSales,
+	Sales - MIN(Sales) OVER() DeviationFromMin,
+	MAX(Sales) OVER() - Sales DeviationFromMax
+FROM Sales.Orders
+
+-- Calculate moving average of sales for each product over time
+
+SELECT
+	OrderID,
+	ProductID,
+	OrderDate,
+	Sales,
+	AVG(Sales) OVER (PARTITION BY ProductID) AvgByProduct,
+	AVG(Sales) OVER (PARTITION BY ProductID ORDER BY OrderDate) MovingAvg
+FROM Sales.Orders 
+
+-- Calculate moving average of sales for each product over time
+-- Calculate moving average of sales for each product over time, including only the next order
+
+SELECT
+	OrderID,
+	ProductID,
+	OrderDate,
+	Sales,
+	AVG(Sales) OVER (PARTITION BY ProductID) AvgByProduct,
+	AVG(Sales) OVER (PARTITION BY ProductID ORDER BY OrderDate) MovingAvg,
+	AVG(Sales) OVER (PARTITION BY ProductID ORDER BY OrderDate ROWS BETWEEN CURRENT ROW AND 1 FOLLOWING) RollingAvg
+FROM Sales.Orders 
+
+-- Rank the orders besed on their sales from highest to lowest
+
+SELECT
+	OrderID,
+	ProductID,
+	Sales,
+	ROW_NUMBER() OVER(ORDER BY Sales DESC) SalesRank_Row,
+	RANK()		 OVER(ORDER BY Sales DESC) SalesRank_Rank,
+	DENSE_RANK() OVER(ORDER BY Sales DESC) SalesRank_Dense
+FROM Sales.Orders
+
+-- Find the top sales for each product
+
+SELECT *
+FROM (
+SELECT
+	OrderID,
+	ProductID,
+	Sales,
+	ROW_NUMBER() OVER(PARTITION BY ProductID ORDER BY Sales DESC) RankByProduct
+FROM Sales.Orders
+)t WHERE RankByProduct = 1
+
+-- Find the lowest 2 customers based on their total sales
+
+SELECT *
+FROM (
+SELECT
+	CustomerID,
+	SUM(Sales) TotalSales,
+	ROW_NUMBER() OVER (ORDER BY SUM(Sales)) RankCustomers
+FROM Sales.Orders
+GROUP BY
+CustomerID
+)t WHERE RankCustomers <= 2
+
+-- Assign unique to the rows of the 'Orders Archive' and return a clean result without any duplicates
+
+SELECT
+ROW_NUMBER() OVER (ORDER BY OrderID, OrderDate) UniqueID,
+*
+FROM Sales.OrdersArchive
+
+-- Identify duplicate rows in the the table 'Orders Archive'
+-- and return a clean result without any duplicates
+
+SELECT * FROM (
+SELECT
+ROW_NUMBER() OVER(PARTITION BY OrderID ORDER BY CreationTime DESC) rn,
+*
+FROM Sales.OrdersArchive
+)t WHERE rn=1
+ 
+SELECT * FROM (
+SELECT
+ROW_NUMBER() OVER(PARTITION BY OrderID ORDER BY CreationTime DESC) rn,
+*
+FROM Sales.OrdersArchive
+)t WHERE rn>1
+
+SELECT
+OrderID,
+Sales,
+NTILE(4) OVER (ORDER BY Sales DESC) FourBucket,
+NTILE(3) OVER (ORDER BY Sales DESC) ThreeBucket,
+NTILE(2) OVER (ORDER BY Sales DESC) TwoBucket,
+NTILE(1) OVER (ORDER BY Sales DESC) OneBucket
+FROM Sales.Orders
+
+-- Segment all orders into 3 categories: high, medium and low sales
+
+SELECT
+*,
+CASE WHEN Buckets = 1 THEN 'High'
+	 WHEN Buckets = 2 THEN 'Medium'
+	 WHEN Buckets = 3 THEN 'Low'
+END SalesSegmentations
+FROM (
+SELECT
+	OrderID,
+	Sales,
+	NTILE(3) OVER (ORDER BY Sales DESC) Buckets
+FROM Sales.Orders
+)t
+
+-- In order to export the data, divide the orders into 2 groups
+
+SELECT
+NTILE(4) OVER ( ORDER BY OrderID) Buckets,
+*
+FROM Sales.Orders
+
+-- Find the products that fall within the highest 40% of the prices
+
+SELECT
+*,
+CONCAT(DistRank * 100, '%') DistRankPerc
+FROM (
+	SELECT
+		Product,
+		Price,
+		CUME_DIST() OVER (ORDER BY Price DESC) DistRank
+	FROM Sales.Products
+	)t
+WHERE DistRank <= 0.4
+
+SELECT
+*,
+CONCAT(DistRank * 100, '%') DistRankPerc
+FROM (
+	SELECT
+		Product,
+		Price,
+		PERCENT_RANK() OVER (ORDER BY Price DESC) DistRank
+	FROM Sales.Products
+	)t
+WHERE DistRank <= 0.4
+
+-- Analyze the month-over-month performance by finding the percentage change
+-- in sales between the current and previous months
+
+SELECT
+*,
+CurrentMonthSales - PreviousMonthSales AS MoM_Change,
+ROUND(CAST((CurrentMonthSales - PreviousMonthSales) AS FLOAT)/PreviousMonthSales * 100, 1) AS MoM_Perc
+FROM (
+SELECT
+	MONTH(OrderDate) OrderMonth,
+	SUM(Sales) CurrentMonthSales,
+	LAG(SUM(Sales)) OVER (ORDER BY MONTH(OrderDate)) PreviousMonthSales
+FROM Sales.Orders
+GROUP BY
+	MONTH(OrderDate)
+)t
+
+SELECT
+*,
+CurrentMonthSales - PreviousMonthSales AS MoM_Change,
+ROUND(CAST((CurrentMonthSales - PreviousMonthSales) AS FLOAT)/PreviousMonthSales * 100, 1) AS MoM_Perc
+FROM (
+SELECT
+	MONTH(OrderDate) OrderMonth,
+	SUM(Sales) CurrentMonthSales,
+	LAG(SUM(Sales)) OVER (ORDER BY MONTH(OrderDate)) PreviousMonthSales
+FROM Sales.Orders
+GROUP BY
+	MONTH(OrderDate)
+)t
+
+-- In order to analyze customer loyalty,
+-- rank customers bases on the average days between their orders
+
+SELECT
+CustomerID,
+AVG(DaysUntilNextOrder) AvgDays,
+RANK() OVER (ORDER BY COALESCE(AVG(DaysUntilNextOrder), 999999)) RankAvg
+FROM (
+	SELECT
+	OrderID,
+	CustomerID,
+	OrderDate CurrentOrder,
+	LEAD(OrderDate) OVER (PARTITION BY CustomerID ORDER BY OrderDate) NextOrder,
+	DATEDIFF(day, OrderDate, LEAD(OrderDate) OVER (PARTITION BY CustomerID ORDER BY OrderDate)) DaysUntilNextOrder
+	FROM Sales.Orders
+)t
+GROUP BY
+	CustomerID
+
+-- Find the lowest and highest sales for each product
+-- Find the difference in sales between the current and the lowest sales
+
+SELECT
+	OrderID,
+	ProductID,
+	Sales,
+	FIRST_VALUE(Sales) OVER(PARTITION BY ProductID ORDER BY Sales) LowestSales,
+	LAST_VALUE(Sales) OVER(PARTITION BY ProductID ORDER BY Sales
+	ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING) HighestSales,
+	FIRST_VALUE(Sales) OVER(PARTITION BY ProductID ORDER BY Sales DESC) HighestSales2,
+	MIN(Sales) OVER (PARTITION BY ProductID) LowestSales2,
+	MAX(Sales) OVER (PARTITION BY ProductID) HighestSales3,
+	Sales - FIRST_VALUE(Sales) OVER (PARTITION BY ProductID ORDER BY Sales) AS SalesDifference
+FROM Sales.Orders
+
+SELECT
+*
+FROM INFORMATION_SCHEMA.COLUMNS
+
+SELECT
+DISTINCT TABLE_NAME
+FROM INFORMATION_SCHEMA.COLUMNS
+
+SELECT
+AVG(Sales)
+FROM Sales.Orders
+
+SELECT
+CustomerID
+FROM Sales.Orders
+
+SELECT
+*
+FROM Sales.Orders
+
+SELECT
+OrderID,
+OrderDate
+FROM Sales.Orders
+
+/*Task: Find the products that have a price
+		higher than the average price of all products*/
+
+-- Mainquery
+SELECT
+*
+FROM
+	-- Subquery
+	(SELECT
+	ProductID,
+	Price,
+	AVG(Price) OVER () AvgPrice
+	FROM Sales.Products)t
+WHERE price > AvgPrice
+
+-- Rank customers based on their total amount of sales
+
+-- Main query
+SELECT
+*,
+RANK() OVER (ORDER BY TotalSales DESC) CustomerRank
+FROM
+	-- Subquery
+	(SELECT
+	CustomerID,
+	SUM(Sales) TotalSales
+	FROM Sales.Orders
+	GROUP BY CustomerID)t
+
+-- Show the products IDs, product names, prices, and the total number of orders
+
+-- Main query
+SELECT
+	ProductID,
+	Product,
+	Price,
+	--- Subquery
+	(SELECT COUNT(*) FROM Sales.Orders) AS TotalOrders
+FROM Sales.Products
+
+-- Show all customer details and find the total orders of each customer
+
+-- Main query
+SELECT
+c.*,
+o.TotalOrders
+FROM Sales.Customers c
+LEFT JOIN (
+	SELECT
+	CustomerID,
+	COUNT(*) TotalOrders
+	FROM Sales.Orders
+	GROUP BY CustomerID) o
+ON c.CustomerID = o.CustomerID
+
+SELECT
+*
+FROM Sales.Orders
+WHERE Sales > 54
+
+-- Find the products that have a price higher than the average price of all products
+
+-- Main Query
+SELECT
+ProductID,
+Price,
+(SELECT AVG(Price) FROM Sales.Products) AvgPrice
+FROM Sales.Products
+WHERE Price > (SELECT AVG(Price) FROM Sales.Products)
+
+SELECT
+*
+FROM Sales.Orders
+WHERE CustomerID = 1
+
+SELECT
+*
+FROM Sales.Orders
+WHERE CustomerID IN (1,2,3,4)
+
+-- Show the details of orders made by customers in Germany
+
+-- Main query
+SELECT
+*
+FROM Sales.Orders
+WHERE CustomerID NOT IN
+				 (SELECT
+				 CustomerID
+				 FROM Sales.Customers
+				 WHERE Country = 'Germany')
+
+-- Find female employees whose salaries are greater
+-- Than the salaries of any male employees
+
+-- Main query
+SELECT
+	EmployeeID,
+	FirstName,
+	Salary
+FROM Sales.Employees
+WHERE Gender = 'F'
+AND Salary > ANY (SELECT Salary FROM Sales.Employees WHERE Gender = 'M');
+
+SELECT FirstName, Salary FROM Sales.Employees WHERE Gender = 'M'
+
+--Show all customer details and find  the total orders of each customer
+
+-- Main query
+SELECT
+*,
+(SELECT COUNT(*) FROM Sales.Orders o WHERE o.CustomerID = c.CustomerID) TotalSales
+FROM Sales.Customers c 
+
+-- Show the details of orders made by customers in Germany
+
+-- Main query
+SELECT
+*
+FROM Sales.Orders o
+WHERE NOT EXISTS (SELECT 1
+				  FROM Sales.Customers c
+				  WHERE Country = 'Germany'
+				  AND c.CustomerID = o.CustomerID)
+
+-- Step1: Find the total Sales Per Customer (Standalone CTE)
+WITH CTE_Total_Sales AS
+(
+SELECT
+	CustomerID,
+	SUM(Sales) AS TotalSales
+FROM Sales.Orders
+GROUP BY CustomerID
+)
+-- Step2: Find the last order date for each customer (Standalone CTE)
+, CTE_Last_Order AS
+(
+SELECT
+	CustomerID,
+	MAX(OrderDate) AS Last_Order
+FROM Sales.Orders
+GROUP BY CustomerID
+)
+-- Step3: Rank customers based on total sales Per Customer (Nested CTE)
+, CTE_Customer_Rank AS
+(
+SELECT
+CustomerID,
+TotalSales,
+RANK() OVER (ORDER BY TotalSales DESC) AS CustomerRank
+FROM CTE_Total_Sales
+)
+-- Step4: segment customers based on their total sales (Nested CTE)
+, CTE_Customer_Segments AS
+(
+SELECT
+CustomerID,
+CASE WHEN TotalSales > 100 THEN 'High'
+	 WHEN TotalSales > 50 THEN 'Medium'
+	 ELSE 'Low'
+END CustomersSegments
+FROM CTE_Total_Sales
+)
+-- Main query
+SELECT
+c.CustomerID,
+c.FirstName,
+c.LastName,
+cts.TotalSales,
+clo.Last_Order,
+ccr.CustomerRank,
+ccs.CustomersSegments
+FROM Sales.Customers c
+LEFT JOIN CTE_Total_Sales cts
+ON cts.CustomerID = c.CustomerID
+LEFT JOIN CTE_Last_Order clo
+ON clo.CustomerID = c.CustomerID
+LEFT JOIN CTE_Customer_Rank ccr
+ON ccr.CustomerID = c.CustomerID
+LEFT JOIN CTE_Customer_Segments ccs
+ON ccs.CustomerID = c.CustomerID
+
+-- Generate a Sequence of numbers from 1 to 20
+
+WITH Series AS (
+	-- Anchor Query
+	SELECT
+	1 AS MyNumber
+	UNION ALL
+	-- Recursive query
+	SELECT
+	MyNumber + 1 
+	FROM Series
+	WHERE MyNumber < 1000
+)
+-- Main query
+SELECT *
+FROM Series
+OPTION (MAXRECURSION 5000)
+
+-- Task: Show the employee hierarchy by displaying each employee's level within the organization
+WITH CTE_Emp_Hierarchy AS
+(
+	-- Anchor Query
+	SELECT
+		EmployeeID,
+		FirstName,
+		ManagerID,
+		1 AS Level
+	FROM Sales.Employees
+	WHERE ManagerID IS NULL
+	UNION ALL
+	-- Recursive Query
+	SELECT
+		e.EmployeeID,
+		e.FirstName, 
+		e.ManagerID,
+		Level +1
+	FROM Sales.Employees AS e
+	INNER JOIN CTE_Emp_Hierarchy ceh
+	ON e.ManagerID = ceh.EmployeeID
+)
+
+-- Main Query
+SELECT
+*
+FROM CTE_Emp_Hierarchy
+
+-- Find the running total of sales for each month
+
+WITH CTE_Monthly_Summary AS (
+	SELECT
+	DATETRUNC(month, OrderDate) OrderMonth,
+	SUM(Sales) TotalSales,
+	COUNT(OrderID) TotalOrders,
+	SUM(Quantity) TotalQuantities
+	FROM Sales.Orders
+	GROUP BY DATETRUNC(month, OrderDate)
+)
+SELECT
+OrderMonth,
+TotalSales,
+SUM(TotalSales) OVER (ORDER BY OrderMonth) AS RunningTotal
+FROM CTE_Monthly_Summary 
+
+CREATE VIEW V_Monthly_Summary AS
+(
+	SELECT
+	DATETRUNC(month, OrderDate) OrderMonth,
+	SUM(Sales) TotalSales,
+	COUNT(OrderID) TotalOrders,
+	SUM(Quantity) TotalQuantities
+	FROM Sales.Orders
+	GROUP BY DATETRUNC(month, OrderDate)
+)
+
+SELECT
+*
+FROM V_Monthly_Summary
+
+SELECT
+OrderMonth,
+TotalSales,
+SUM(TotalSales) OVER (ORDER BY OrderMonth) AS RunningTotal
+FROM V_Monthly_Summary
+
+CREATE VIEW Sales.V_Monthly_Summary AS
+(
+	SELECT
+	DATETRUNC(month, OrderDate) OrderMonth,
+	SUM(Sales) TotalSales,
+	COUNT(OrderID) TotalOrders,
+	SUM(Quantity) TotalQuantities
+	FROM Sales.Orders
+	GROUP BY DATETRUNC(month, OrderDate)
+)
+
+DROP VIEW V_Monthly_Summary
+
+DROP VIEW Sales.V_Monthly_Summary
+
+CREATE VIEW Sales.V_Monthly_Summary AS
+(
+SELECT
+	DATETRUNC(month, OrderDate) OrderMonth,
+	SUM(Sales) TotalSales,
+	COUNT(OrderID) TotalOrders
+	FROM Sales.Orders
+	GROUP BY DATETRUNC(month, OrderDate)
+)
+
+IF OBJECT_ID ('Sales.V_Monthly_Summary', 'V') IS NOT NULL
+   DROP VIEW Sales.V_Monthly_Summary;
+GO
+CREATE VIEW Sales.V_Monthly_Summary AS
+(
+SELECT
+	DATETRUNC(month, OrderDate) OrderMonth,
+	SUM(Sales) TotalSales,
+	COUNT(OrderID) TotalOrders
+	FROM Sales.Orders
+	GROUP BY DATETRUNC(month, OrderDate)
+)
+
+-- Task: Provide view that combines details from orders, products, customers, and employees
+
+CREATE VIEW Sales.V_Order_Details AS (
+	SELECT
+	o.OrderID,
+	o.OrderDate,
+	p.Product,
+	p.Category,
+	COALESCE(c.FirstName, '') + ' ' + COALESCE(c.LastName, '') CustomerName,
+	c.Country CustomerCountry,
+	COALESCE(e.FirstName, '') + ' ' + COALESCE(e.LastName, '') SalesName,
+	e.Department,
+	o.Sales,
+	o. Quantity
+	FROM Sales.Orders o
+	LEFT JOIN Sales.Products p
+	ON p.ProductID = o.ProductID
+	LEFT JOIN Sales.Customers c
+	ON c.CustomerID = o.CustomerID
+	LEFT JOIN Sales.Employees e
+	ON e.EmployeeID = SalesPersonID
+	)
+
+SELECT
+*
+FROM Sales.V_Order_Details
+
+-- Provide a view for EU Sales team
+-- That combines from all tables
+-- And exclude Data related to the USA
+
+CREATE VIEW Sales.V_Order_Details_EU AS(
+	SELECT
+	o.OrderID,
+	o.OrderDate,
+	p.Product,
+	p.Category,
+	COALESCE(c.FirstName, '') + ' ' + COALESCE(c.LastName, '') CustomerName,
+	c.Country CustomerCountry,
+	COALESCE(e.FirstName, '') + ' ' + COALESCE(e.LastName, '') SalesName,
+	e.Department,
+	o.Sales,
+	o. Quantity
+	FROM Sales.Orders o
+	LEFT JOIN Sales.Products p
+	ON p.ProductID = o.ProductID
+	LEFT JOIN Sales.Customers c
+	ON c.CustomerID = o.CustomerID
+	LEFT JOIN Sales.Employees e
+	ON e.EmployeeID = SalesPersonID
+	WHERE c.Country != 'USA')
+
+SELECT * FROM Sales.V_Order_Details_EU
+
+
+IF OBJECT_ID('Sales.MonthlyOrders', 'U') IS NOT NULL
+	DROP TABLE Sales.MonthlyOrders;
+GO
+SELECT
+	DATENAME(month, OrderDate) OrderMonth,
+	COUNT(OrderID) TotalOrders
+INTO Sales.MonthlyOrders
+FROM Sales.Orders
+GROUP BY DATENAME(month, OrderDate)
+
+DROP TABLE Sales.MonthlyOrders;
+
+SELECT
+*
+INTO #Orders
+FROM Sales.Orders
+
+SELECT
+*
+FROM #Orders
+
+DELETE FROM #Orders
+WHERE OrderStatus = 'Delivered'
+
+SELECT
+*
+INTO Sales.OrdersTest
+FROM #Orders
+
+-- Step 1: Write a Query
+-- For US Customers find the total number of Customers and the average score
+
+SELECT
+	COUNT(*) TotalCustomers,
+	AVG(Score) AvgScore
+FROM Sales.Customers
+WHERE Country = 'USA'
+
+-- Step 2: Turning the query into a stored procedure
+
+CREATE PROCEDURE GetCustomerSummary AS
+BEGIN
+SELECT
+	COUNT(*) TotalCustomers,
+	AVG(Score) AvgScore
+FROM Sales.Customers
+WHERE Country = 'USA'
+END
+
+-- Step 3: Excetud the stored procedure
+
+EXEC GetCustomerSummary
+
+-- Define Stored procedure
+ALTER PROCEDURE GetCustomerSummary @Country NVARCHAR(50) = 'USA'
+AS
+BEGIN
+
+DECLARE @TotalCustomers INT, @AvgScore FLOAT;
+-- Prepare & Cleanup data
+
+IF EXISTS (SELECT 1 FROM Sales.Customers WHERE Score IS NULL AND Country = @Country) 
+BEGIN
+	PRINT('Updating NULL Scores to 0');
+	UPDATE Sales.Customers
+	SET Score = 0
+	WHERE Score IS NULL AND Country = @Country;
+END
+
+ELSE
+BEGIN
+	PRINT('No NULL Scores found')
+END;
+
+--Generation reports
+
+SELECT
+	@TotalCustomers = COUNT(*),
+	@AvgScore = AVG(Score)
+FROM Sales.Customers
+WHERE Country = @Country;
+
+PRINT 'Total Customers from ' + @Country + ':' +  CAST(@TotalCustomers AS NVARCHAR);
+PRINT 'Average Score from ' + @Country + ':' + CAST(@AvgScore AS NVARCHAR);
+
+-- Find the total Nr. of orders and total sales
+
+SELECT
+	COUNT(OrderID) TotalOrders,
+	SUM(Sales) TotalSales
+FROM Sales.Orders o
+JOIN Sales.Customers c
+ON c.CustomerID = o.CustomerID
+WHERE c.Country = @Country;
+
+END
+
+-- Excute the stored procedure
+EXEC GetCustomerSummary;
+EXEC GetCustomerSummary @Country = 'Germany';
+
+SELECT * FROM Sales.Customers
+
+DROP PROCEDURE GetCustomerSummaryGermany
+
+-- For German customers find the total number of customers and the average score
+
+CREATE PROCEDURE GetCustomerSummaryGermany AS
+BEGIN
+SELECT
+	COUNT(*) TotalCustomers,
+	AVG(Score) AvgScore
+FROM Sales.Customers
+WHERE Country = 'Germany'
+END
+
+EXEC GetCustomerSummaryGermany
+
+
+-- Define Stored procedure
+ALTER PROCEDURE GetCustomerSummary @Country NVARCHAR(50) = 'USA'
+AS
+BEGIN
+BEGIN TRY 
+
+DECLARE @TotalCustomers INT, @AvgScore FLOAT;
+
+--=================================
+-- Step 1: Prepare & Cleanup data
+--=================================
+
+IF EXISTS (SELECT 1 FROM Sales.Customers WHERE Score IS NULL AND Country = @Country) 
+BEGIN
+	PRINT('Updating NULL Scores to 0');
+	UPDATE Sales.Customers
+	SET Score = 0
+	WHERE Score IS NULL AND Country = @Country;
+END
+
+ELSE
+BEGIN
+	PRINT('No NULL Scores found')
+END;
+
+--=================================
+-- Step 12: Generating summary reports
+--=================================
+-- Calculate total customers and average score for specific country
+SELECT
+	@TotalCustomers = COUNT(*),
+	@AvgScore = AVG(Score)
+FROM Sales.Customers
+WHERE Country = @Country;
+
+PRINT 'Total Customers from ' + @Country + ':' +  CAST(@TotalCustomers AS NVARCHAR);
+PRINT 'Average Score from ' + @Country + ':' + CAST(@AvgScore AS NVARCHAR);
+
+-- Calculate total number of orders and total sales for specific country
+
+SELECT
+	COUNT(OrderID) TotalOrders,
+	SUM(Sales) TotalSales
+FROM Sales.Orders o
+JOIN Sales.Customers c
+ON c.CustomerID = o.CustomerID
+WHERE c.Country = @Country;
+
+END TRY
+BEGIN CATCH
+	-- ================
+	-- Error handling
+	-- ================
+	PRINT('An error occured.');
+	PRINT('Error Message: ' + ERROR_MESSAGE());
+	PRINT('Error Number: ' + CAST(ERROR_NUMBER() AS NVARCHAR));
+	PRINT('Error Line: ' + CAST(ERROR_LINE() AS NVARCHAR));
+	PRINT('Error Procedure ' + ERROR_PROCEDURE());
+END CATCH
+END
+GO
+
+-- Excute the stored procedure
+EXEC GetCustomerSummary;
+EXEC GetCustomerSummary @Country = 'Germany';
+
+CREATE TABLE Sales.EmployeeLogs (
+	LogID INT IDENTITY(1,1) PRIMARY KEY,
+	EmployeeID INT,
+	LogMessage VARCHAR(255),
+	LogDate DATE
+)
+
+CREATE TRIGGER trg_AfterInsertEmployee ON Sales.Employees
+AFTER INSERT
+AS
+BEGIN
+	INSERT INTO Sales.EmployeeLogs (EmployeeID, LogMessage, LogDate)
+	SELECT
+		EmployeeID,
+		'New Employee Added =' + CAST(EmployeeID AS VARCHAR),
+		GETDATE()
+	FROM INSERTED
+END
+
+SELECT * FROM Sales.EmployeeLogs
+
+INSERT INTO Sales.Employees
+VALUES
+(7, 'Maria', 'Doe', 'HR', '1998-01-12', 'F', 80000, 3)
+
+SELECT *
+INTO Sales.DBC
+FROM Sales.Customers
+
+SELECT *
+INTO Sales.DBCustomers
+FROM Sales.Customers
+
+SELECT *
+FROM Sales.DBCustomers
+WHERE CustomerID = 1
+
+CREATE CLUSTERED INDEX idx_DBCustomers_CustomerID
+ON Sales.DBCustomers (CustomerID)
+
+CREATE CLUSTERED INDEX idx_DBCustomers_FirstName
+ON Sales.DBCustomers (FirstName)
+
+DROP INDEX idx_DBCustomers_CustomerID ON Sales.DBCustomers
+
+SELECT
+*
+FROM Sales.DBCustomers
+WHERE LastName = 'Brown'
+
+CREATE NONCLUSTERED INDEX idx_DBCustomers_LastName
+ON Sales.DBCustomers (LastName)
+
+SELECT
+*
+FROM Sales.DBCustomers
+WHERE FirstName = 'Anna'
+
+CREATE NONCLUSTERED INDEX idx_DBCustomers_FirstName
+ON Sales.DBCustomers (FirstName)
+
+SELECT
+*
+FROM Sales.DBCustomers
+WHERE Country = 'USA' AND Score > 500
+
+CREATE INDEX idx_DBCustomers_CountryScore
+ON Sales.DBCustomers (Country, Score)
+
+A,B,C,D
+
+-- Index will be used
+A
+A,B
+A,B,C
+
+-- Index won't be used
+B
+A,C
+A,B,D
+
+CREATE CLUSTERED COLUMNSTORE INDEX idx_DBCustomers_CS
+ON Sales.DBCustomers
+
+DROP INDEX idx_DBCustomers_CS ON Sales.DBCustomers
+
+CREATE NONCLUSTERED COLUMNSTORE INDEX idx_DBCustomers_CS_FirstName
+ON Sales.DBCustomers (FirstName)
+
+USE AdventureWorkDW2022
+-- HEAP
+SELECT *
+INTO FactInternetSales_HP
+FROM FactInternetSales
+
+-- RowStore
+SELECT *
+INTO FactInternetSales_RS
+FROM FactInternetSales
+
+CREATE CLUSTERED INDEX idx_FactInternetSales_RS_PK
+ON FactInternetSales_RS (SalesOrderNumber, SalesOrderLineNumber)
+
+-- Columnstore
+SELECT *
+INTO FactInternetSales_CS
+FROM FactInternetSales
+
+CREATE CLUSTERED INDEX idx_FactInternetSales_CS_PK
+ON FactInternetSales_CS
+
+SELECT * FROM Sales.Products
+
+CREATE UNIQUE NONCLUSTERED INDEX idx_Products_Product
+ON Sales.Products (Product)
+
+SELECT * FROM Sales.Customers
+WHERE Country = 'USA'
+
+CREATE NONCLUSTERED INDEX idx_Customers_Country
+ON Sales.Customers (Country)
+WHERE Country = 'USA'
+
+SELECT * FROM Sales.Customers
+WHERE Country = 'Germany'
+
+-- List all indexes on a specific table
+
+sp_helpindex 'Sales.DBCustomers'
+
+-- Monitoring index usage
+
+SELECT * FROM sys.indexes
+
+SELECT
+	tbl.name AS TableName,
+	idx.type_desc AS IndexType,
+	idx.is_primary_key AS IsPrimaryKey,
+	idx.is_unique AS IsUnique,
+	idx.is_disabled AS IsDisabled,
+	s.user_seeks AS UserSeeks,
+	s.user_scans AS UserScan,
+	s.user_lookups AS UserLookups,
+	s.user_updates AS UserUptades,
+	COALESCE(s.last_user_seek,s.last_user_scan) LastUptade
+FROM sys.indexes idx
+JOIN sys.indexes tbl
+ON	 idx.object_id = tbl.object_id
+LEFT JOIN sys.dm_db_index_usage_stats s
+ON	 s.object_id = idx.object_id
+AND  s.index_id = idx.index_id
+ORDER BY tbl.name, idx.name
+
+SELECT * FROM sys.dm_db_index_usage_stats
+
+SELECT * FROM sys.tables
+
+SELECT * FROM Sales.Products
+WHERE Product = 'Caps'
+
+SELECT
+	fs.SalesOrderNumber,
+	dp.EnglishProductName,
+	dp.Color
+FROM		FactInternetSales fs
+INNER JOIN DimProduct dp
+ON		   fs.ProductKey = dp.ProductKey
+WHERE dp.Color = 'Black'
+AND fs.OrderDateKey BETWEEN 20101229 AND 20101231
+
+SELECT * FROM sys.dm_db_missing_index_details
+
+SELECT
+	tbl.name AS TableName,
+	col.name AS IndexColumn,
+	idx.name AS IndexName,
+	idx.type_desc AS IndexType,
+	COUNT(*) OVER (PARTITION BY tbl.name, col.name) ColumnCount
+FROM sys.indexes idx
+JOIN sys.tables tbl ON idx.object_id = tbl.object_id
+JOIN sys.index_columns ic ON idx.object_id = ic.object_id AND idx.index_id = ic.index_id
+JOIN sys.columns col ON ic.object_id = col.object_id AND ic.column_id = col.column_id
+ORDER BY ColumnCount DESC
+
+SELECT
+	SCHEMA_NAME(t.schema_id) AS SchemaName,
+	t.name AS TableName,
+	s.name AS StatisticName,
+	sp.last_updated As LastUpdate,
+	DATEDIFF(day, sp.last_updated, GETDATE()) As LastUpdateDay,
+	sp.rows AS 'Rows',
+	sp.modification_counter AS ModificationsSinceLastUpdate
+FROM sys.stats AS s
+JOIN sys.tables t
+ON	 s.object_id = t.object_id
+CROSS APPLY sys.dm_db_stats_properties(s.object_id, s.stats_id) AS sp
+ORDER BY
+sp.modification_counter DESC;
+
+UPDATE STATISTICS Sales.DBCustomers _WA_Sys_00000001_6EF57B66
+
+UPDATE STATISTICS Sales.DBCustomers
+
+EXEC sp_updatestats
+
+SELECT *
+FROM sys.dm_db_index_physical_stats (DB_ID(), NULL, NULL, NULL, 'LIMITED')
+
+SELECT
+	tbl.name AS TableName,
+	idx.name AS IndexName,
+	s.avg_fragmentation_in_percent,
+	s.page_count
+FROM sys.dm_db_index_physical_stats(DB_ID(), NULL, NULL, NULL, 'LIMITED') AS s
+INNER JOIN sys.tables tbl
+ON s.object_id = tbl.object_id
+INNER JOIN sys.indexes AS idx
+ON idx.object_id = s.object_id
+AND idx.index_id = s.index_id
+ORDER BY s.avg_fragmentation_in_percent DESC
+
+ALTER INDEX idx_Customers_CS_Country ON Sales.Customers REORGANIZE 
+
+ALTER INDEX idx_Customers_Country ON Sales.Customers REBUILD 
+
+SELECT *
+FROM FactReselllerSales_HP
+ORDER BY SalesOrderNumber
+
+SELECT *
+FROM FactReselllrSales_HP
+WHERE CarrierTrackingNumber = '4911-403C-98'
+
+CREATE NONCLUSTERED INDEX idx_FactReseller_CTA
+ON FactResellerSales (CarrierTrackingNumber)
+
+SELECT
+	p.EnglishProductName AS ProductName,
+	SUM(s.SalesAmount) AS TotalSales
+FROM FactResellerSales s
+JOIN DimProduct p
+ON p.ProductKey = s.ProductKey
+GROUP BY p.EnglishProductName
+
+CREATE CLUSTERED COLUMNSTORE INDEX idx_FactResellerSalesHP
+ON FactResellerSalesHP
+
+SELECT
+	o.Sales,
+	c.Country
+FROM Sales.Orders o 
+LEFT JOIN Sales.Customers c WITH (INDEX([PK_Customer_A4AE64B87FC20A48]))
+ON		  o.CustomerID = c.CustomerID
+OPTION (HASH JOIN)
+
+-- Step1: Create a partition function
+
+CREATE PARTITION FUNCTION PartititonByYear (DATE)
+AS RANGE LEFT FOR VALUES ('2023-12-31', '2024-12-31', '2025-12-31')
+
+-- Query lists all existing partition function
+
+SELECT
+	name, 
+	function_id,
+	type,
+	type_desc,
+	boundary_value_on_right
+FROM sys.partition_fucntions
+
+-- Step2: Create filegroups
+
+ALTER DATABASE SalesDB ADD FILEGROUP FG_2023;
+ALTER DATABASE SalesDB ADD FILEGROUP FG_2024;
+ALTER DATABASE SalesDB ADD FILEGROUP FG_2025;
+ALTER DATABASE SalesDB ADD FILEGROUP FG_2026;
+
+ALTER DATABASE SalesDB REMOVE FILEGROUP FG_2023;
+
+-- Query lists alla existing Filegroups
+
+SELECT *
+FROM sys.filegroups
+WHERE type = 'FG'
+
+-- Step3: Add .ndf files to each filegroup
+
+ALTER DATABASE SalesDB ADD FILE
+(
+	NAME = P_2023, -- Logical Name
+	FILENAME = 'C:Program Files\Microsoft SQL Server\MSSQL16.SQLEXPRESS\MSSQL\DATA\P_2023.ndf'
+) TO FILEGROUP FG_2023;
+
+SELECT
+	fg.name AS FilegroupName,
+	mf.name AS LogicalFileName,
+	mf.physical_name AS PhysicalFilePath,
+	mf.size / 128 AS SizeInMB
+FROM
+	sys.filegroups fg
+JOIN 	
+	sys.master_files mf ON fg.data_space_id = mf.data_space_id
+WHERE
+	mf.database_id = DB_ID('SalesDB');
+
+-- Step4: Create partition scheme
+
+CREATE PARTITION SCHEME SchemePartitionByYear
+AS PARTITION PartitionByYear
+TO (FG_2023, FG_2024, FG_2025, FG_2026)
+
+-- Query lists all partition scheme
+
+SELECT
+	ps.name AS PartitionSchemeName,
+	pf.name AS PartitionFunctionName,
+	ds.destination_id AS PartitionNumber,
+	fg.name AS FilegroupName
+FROM sys.partition_schemes ps
+JOIN sys.partition_functions pf ON ps.function_id = pf.function_id
+JOIN sys.destination_data_spaces ds ON ps.data_space_id = ds.partition_scheme_id
+JOIN sys.filegroups fg ON ds.data_space_id = fg.data_space_id
+
+-- Step5: Create the partitioned table
+
+CREATE TABLE Sales.Orders_Partitioned
+(
+	OrderID INT,
+	OrderDate DATE,
+	Sales INT
+) ON SchemePartitionByYear (OrderDate)
+
+-- Step6: insert data into the partitioned table
+
+INSERT INTO Sales.Orders_Partitioned VALUES (1, '2023-05-15', 100);
+INSERT INTO Sales.Orders_Partitioned VALUES (2, '2024-07-20', 50);
+INSERT INTO Sales.Orders_Partitioned VALUES (3, '2025-12-31', 20);
+
+SELECT * FROM Sales.Orders_Partitioned
+
+SELECT
+	p.partition_number AS PartitionNumber,
+	f.name AS PartitionFilegroup,
+	p.rows AS NumberOfRows
+FROM sys.partitions p
+JOIN sys.destination_data_spaces dds ON p.partition_number = dds.destination_id
+JOIN sys.filegroups f ON dds.data_space_id = f.data_space_id
+WHERE OBJECT_NAME(p.object_id) = 'Orders_Partitioned';
+
+SELECT *
+INTO Sales.Orders_NoPartition
+FROM Sales.Orders_Partitioned
+
+SELECT *
+FROM Sales.Orders_Partitioned
+WHERE OrderDate IN ('2026-01-01', '2025-12-31')
+
+SELECT *
+FROM Sales.Orders_NoPartition
+WHERE OrderDate IN ('2026-01-01', '2025-12-31')
+
+-- ============================================
+-- Tip 1: Select only what you need
+-- ============================================
+
+-- Bad practice
+SELECT * FROM Sales.Customers
+
+-- Good practice
+SELECT CustomerID,FirstName, LastName FROM Sales.Customers
+
+-- ============================================
+-- Tip 2: Avoid unnecessary DISTINCT & ORDER BY
+-- ============================================
+
+-- Bad practice
+SELECT DISTINCT
+	FirstName
+FROM Sales.Customers
+ORDER BY FirstName
+
+-- Good practice
+SELECT FirstName
+FROM Sales.Customers
+
+-- ============================================
+-- Tip 3: For explaration purpose, limited rows!
+-- ============================================
+
+-- Bad practice
+SELECT
+	OrderID,
+	Sales
+FROM Sales.Orders
+
+-- Good practice
+SELECT TOP 10
+	OrderID,
+	Sales
+FROM Sales.Orders
+
+-- ===========================================================================
+-- Tip 4: Create nonclustered index on frequently used columns in WHERE clause
+-- ===========================================================================
+
+SELECT * FROM Sales.Orders WHERE OrderStatus = 'Delivered'
+
+CREATE NONCLUSTERED INDEX idx_OrderStatus ON Sales.Orders(OrderStatus)
+
+-- ===========================================================================
+-- Tip 5: Avoid applying functions to columns in WHERE clauses
+-- ===========================================================================
+
+-- Bad practice
+SELECT * FROM Sales.Orders
+WHERE LOWER(OrderStatus) = 'delivered'
+
+SELECT *
+FROM Sales.Customers
+WHERE SUBSTRING(FirstName, 1, 1) = 'A'
+
+SELECT *
+FROM Sales.Orders
+WHERE YEAR(OrderDate) = 2025
+
+-- Good practice
+SELECT * FROM Sales.Orders
+WHERE OrderStatus = 'Delivered'
+
+SELECT *
+FROM Sales.Customers
+WHERE FirstName LIKE 'A%'
+
+SELECT *
+FROM Sales.Orders
+WHERE OrderDate BETWEEN '2025-01-01' AND '2025-12-31'
+
+-- ===========================================================================
+-- Tip 6: Avoid leading wildcards as they prevent index usage
+-- ===========================================================================
+
+-- Bad practice
+SELECT *
+FROM Sales.Customers
+WHERE LastName LIKE '%Gold%'
+
+-- Good practice
+SELECT *
+FROM Sales.Customers
+WHERE LastName LIKE 'Gold%'
+
+-- ===========================================================================
+-- Tip 7: Use IN instead of multiple OR
+-- ===========================================================================
+
+-- Bad practice
+SELECT *
+FROM Sales.Orders
+WHERE CustomerID = 1 OR CustomerID = 2 OR CustomerID = 3
+
+-- Good practice
+SELECT *
+FROM Sales.Orders
+WHERE CustomerID IN (1,2,3)
+
+-- ===================================================================
+-- Tip 8: Understand the speed of joins & use INNER JOIN when possible
+-- ===================================================================
+
+-- Best performance
+SELECT c.firstName, o.OrderID FROM Sales.Customers c INNER JOIN Sales.Orders o ON c.CustomerID = o.CustomerID
+
+-- Slightly slower performance
+SELECT c.FirstName, o.OrderID FROM Sales.Customers c RIGHT JOIN Sales.Orders o ON c.CustomerID = o.CustomerID
+SELECT c.FirstName, o.OrderID FROM Sales.Customers c LEFT JOIN Sales.Orders o ON c.CustomerID = o.CustomerID
+
+-- Worst performance
+SELECT c.FirstName, o.OrderID FROM Sales.Customers c OUTER JOIN Sales.Orders o ON c.CustomerID = o.CustomerID
+
+-- ===================================================================
+-- Tip 9: Use explicit join (ANSI join) instead of implicit join (non-ANSI join)
+-- ===================================================================
+
+-- Bad practice
+SELECT o.OrderID, c.firstName
+FROM Sales.Customers c, Sales.Orders o
+WHERE c.CustomerID = o.CustomerID
+
+-- Good practice
+SELECT o.OrderID, c.firstName
+FROM Sales.Customers c
+INNER JOIN Sales.Orders o
+ON c.CustomerID = o.CustomerID
+
+-- ===================================================================
+-- Tip 10: Make sure to index the columns used in the ON clause
+-- ===================================================================
+
+SELECT c.FirstName, o.OrderID
+FROM Sales.Orders o
+INNER JOIN Sales.Customers c
+ON c.CustomerID = o.CustomerID
+
+CREATE NONCLUSTERED INDEX IX_Orders_CustomerID ON Sales.Orders(CustomerID)
+
+-- ===================================================================
+-- Tip 12: Filter before joining (Big Tables)
+-- ===================================================================
+
+-- Filter after join (WHERE)
+SELECT c.FirstName, o.OrderID
+FROM Sales.Customers c
+INNER JOIN Sales.Orders o
+ON c.CustomerID = o.CustomerID
+WHERE o.OrderStatus = 'Delivered'
+
+-- Best practice for small-medium tables
+-- Grouping and joining
+SELECT c.CustomerID, c.FirstName, COUNT(o.OrderID) AS OrderCount
+FROM Sales.Customers c
+INNER JOIN Sales.Orders o
+ON c.CustomerID = o.CustomerID
+GROUP BY c.CustomerID, c.FirstName
+
+-- Filter during Join (ON)
+SELECT c.FirstName, o.OrderID
+FROM Sales.Customers c
+INNER JOIN Sales.Orders o
+ ON c.CustomerID = o.CustomerID
+AND o.OrderStatus = 'Delivered'
+
+-- Best practice for big tables
+-- Pre-aggregated subquery
+SELECT c.CustomerID, c.FirstName, o.OrderCount
+FROM Sales.Customers c
+INNER JOIN (
+	SELECT CustomerID, COUNT(OrderID) AS OrderCount
+	FROM Sales.Orders
+	GROUP BY CustomerID
+) o
+ON c.CustomerID = o.CustomerID
+
+ -- Filter before join (SUBQUERY)
+SELECT c.FirstName, o.OrderID
+FROM Sales.Customers c
+INNER JOIN (SELECT OrderID, CustomerID FROM Sales.Orders WHERE OrderStatus = 'Delivered') o
+ON c.CustomerID = o.CustomerID
+-- Bad practice
+-- Correlated subquery
+SELECT
+	c.CustomerID,
+	c.FirstName,
+	(SELECT COUNT(o.OrderID)
+	FROM Sales.Orders o
+	WHERE o.CustomerID = c.CustomerID) AS OrderCount
+FROM Sales.Customers c
+
+ -- ===================================================================
+-- Tip 13: Use explicit join (ANSI join) instead of implicit join (non-ANSI join)
+-- ===================================================================
+
+-- Bad practice
+SELECT o.OrderID, c.firstName
+FROM Sales.Customers c
+INNER JOIN Sales.Orders o
+ON c.CustomerID = o.CustomerID
+OR c.CustomerID = o.SalesPersonID
+
+-- Best practice
+SELECT o.OrderID, c.firstName
+FROM Sales.Customers c
+INNER JOIN Sales.Orders o
+ON c.CustomerID = o.CustomerID
+UNION
+SELECT o.OrderID, c.FirstName
+FROM Sales.Customers c
+INNER JOIN Sales.Orders o
+ON c.CustomerID = o.SalesPersonID
+
+-- ===================================================================
+-- Tip 14: Check for nested loops and use SQL HINTS
+-- ===================================================================
+
+-- Bad practice
+SELECT o.OrderID, c.firstName
+FROM Sales.Customers c
+INNER JOIN Sales.Orders o
+ON c.CustomerID = o.CustomerID
+
+-- Good practice for having big table & small table
+SELECT o.OrderID, c.firstName
+FROM Sales.Customers c
+INNER JOIN Sales.Orders o
+ON c.CustomerID = o.CustomerID
+OPTION (HASH JOIN)
+
+-- ===================================================================
+-- Tip 15: Use UNION ALL instead of using UNION | duplicates are acceptable
+-- ===================================================================
+
+-- Bad practice
+SELECT CustomerID FROM Sales.Orders
+UNION
+SELECT CustomerID FROM Sales.OrdersArchive
+
+-- Good practice
+SELECT CustomerID FROM Sales.Orders
+UNION ALL
+SELECT CustomerID FROM Sales.OrdersArchive
+
+-- ===================================================================
+-- Tip 16: Use UNION ALL + Distinct instead of using UNION | duplicates are not acceptable
+-- ===================================================================
+
+-- Bad practice
+SELECT CustomerID FROM Sales.Orders
+UNION
+SELECT CustomerID FROM Sales.OrdersArchive
+
+-- Good practice
+SELECT DISTINCT CustomerID
+FROM (
+	SELECT CustomerID FROM Sales.Orders
+	UNION ALL
+	SELECT CustomerID FROM Sales.OrdersArchive
+) AS CombineData
+
+-- ===================================================================
+-- Tip 17: Use columnstore index for aggregations on large table
+-- ===================================================================
+
+SELECT CustomerID, COUNT(OrderID) AS OrderCount
+FROM Sales.Orders
+GROUP BY CustomerID
+
+CREATE CLUSTERED COLUMNSTORE INDEX idx_Orders_Columnstore ON Sales.Orders
+
+-- ===================================================================
+-- Tip 18: Pre-Aggregate data and store it in new table for reporting
+-- ===================================================================
+
+SELECT MONTH(OrderDate) OrderYear, SUM(Sales) AS TotalSales
+INTO Sales.SalesSummary
+FROM Sales.Orders
+GROUP BY MONTH(OrderDate)
+
+SELECT OrderYear, TotalSales FROM Sales.SalesSummary
+
+-- JOIN (Best practice: if the performance equals to EXISTS)
+SELECT o.OrderID, o.Sales
+FROM Sales.Orders o
+INNER JOIN Sales.Customers c
+ON o.CustomerID = c.CustomerID
+WHERE c.Country = 'USA'
+
+-- EXISTS (Best practice: use it for large tables)
+SELECT o.OrderID, o.Sales
+FROM Sales.Orders o
+WHERE EXISTS (
+	SELECT 1
+	FROM Sales.Customers c
+	WHERE c.CustomerID = o.CustomerID
+	AND c.Country = 'USA'
+)
+
+-- IN (Bad practice)
+SELECT o.OrderID, o.Sales
+FROM Sales.Orders o
+WHERE o.CustomerID IN (
+	SELECT CustomerID
+	FROM Sales.Customers
+	WHERE Country = 'USA'
+)
+
+-- ===================================================================
+-- Tip 20: Avoid redundant logic in your query
+-- ===================================================================
+
+-- Bad practice
+SELECT EmployeeID, FirstName, 'Above Average' Status
+FROM Sales.Employees
+WHERE Salary > (SELECT AVG(Salary) FROM Sales.Employees)
+UNION ALL
+SELECT EmployeeID, FirstName, 'Below Avarage' Status
+FROM Sales.Employees
+WHERE Salary < (SELECT AVG(Salary) FROM Sales.Employees)
+
+-- Good practice
+SELECT
+	EmployeeID,
+	FirstName,
+	CASE
+		WHEN Salary > AVG(Salary) OVER () THEN 'Above Average'
+		WHEN Salary > AVG(Salary) OVER () THEN 'Below Average'
+		ELSE 'Average'
+	END AS Status
+FROM Sales.Employees
+
+CREATE TABLE CustomersInfo (
+	CustomerID INT,
+	FirstName VARCHAR(MAX),
+	LastName VARCHAR(50),
+	Country VARCHAR(255),
+	TotalPurchases FLOAT,
+	Score INT,
+	BirthDate DATE,
+	EmployeeID INT,
+	CONSTRAINT FK_CustomersInfo_EmplyeeID FOREIGN KEY (EmployeeID)
+		REFERENCES Sales.Employees(EmployeeID)
+)
+
+CREATE TABLE CustomersInfo (
+	CustomerID INT,
+	FirstName VARCHAR(50),
+	LastName VARCHAR(50),
+	Country VARCHAR(50),
+	TotalPurchases FLOAT,
+	Score INT,
+	BirthDate DATE,
+	EmployeeID INT,
+	CONSTRAINT FK_CustomersInfo_EmplyeeID FOREIGN KEY (EmployeeID)
+		REFERENCES Sales.Employees(EmployeeID)
+)
+
+CREATE TABLE CustomersInfo (
+	CustomerID INT,
+	FirstName VARCHAR(50) NOT NULL,
+	LastName VARCHAR(50) NOT NULL,
+	Country VARCHAR(50) NOT NULL,
+	TotalPurchases FLOAT,
+	Score INT,
+	BirthDate DATE,
+	EmployeeID INT,
+	CONSTRAINT FK_CustomersInfo_EmplyeeID FOREIGN KEY (EmployeeID)
+		REFERENCES Sales.Employees(EmployeeID)
+)
+
+CREATE TABLE CustomersInfo (
+	CustomerID INT PRIMARY KEY CLUSTERED,
+	FirstName VARCHAR(50) NOT NULL,
+	LastName VARCHAR(50) NOT NULL,
+	Country VARCHAR(50) NOT NULL,
+	TotalPurchases FLOAT,
+	Score INT,
+	BirthDate DATE,
+	EmployeeID INT,
+	CONSTRAINT FK_CustomersInfo_EmplyeeID FOREIGN KEY (EmployeeID)
+		REFERENCES Sales.Employees(EmployeeID)
+)
+
+CREATE TABLE CustomersInfo (
+	CustomerID INT PRIMARY KEY CLUSTERED,
+	FirstName VARCHAR(50) NOT NULL,
+	LastName VARCHAR(50) NOT NULL,
+	Country VARCHAR(50) NOT NULL,
+	TotalPurchases FLOAT,
+	Score INT,
+	BirthDate DATE,
+	EmployeeID INT,
+	CONSTRAINT FK_CustomersInfo_EmplyeeID FOREIGN KEY (EmployeeID)
+		REFERENCES Sales.Employees(EmployeeID)
+)
+
+CREATE NONCLUSTERED INDEX IX_Good_Customers_EmployeeID
+ON CustomersInfo(EmployeeID)
+
+WITH Series AS (
+	-- Anchor Query
+	SELECT
+	1 AS MyNumber
+	UNION ALL
+	-- Recursive Query
+	SELECT
+	MyNumber + 1 
+	FROM Series
+	WHERE MyNumber < 20
+)
+-- Main Query
+SELECT *
+FROM Series
+
+with CTE_Total_Sales as
+(Select
+CustomerID, sum(Sales) as TotalSales
+from Sales.Orders
+group by CustomerID),
+cte_customer_segments as
+(SELECT CustomerID,
+case when TotalSales > 100 then 'High Value'
+when TotalSales between 50 and 100 then 'Medium Value'
+else 'Low Value' end as CustomerSegment
+from CTE_Total_Sales)
+select c.CustomerID, c.FirstName, c.LastName,
+cts.TotalSales, ccs.CustomerSegment
+FROM sales.customers c
+left join CTE_Total_Sales cts
+
+SELECT TOP 10
+	CustomerID,
+	Score,
+	ISNULL (Score,2) IsNullScore,
+	FirstName + ' ' + LastName AS FullName,
+	GETDATE() CurrentDateTime
+FROM Sales.Customers
+
+-- Create Database 'DataWarehouse'
+
+USE master;
+
+CREATE DATABASE DataWarehouse;
+
+USE DataWarehouse;
+
+CREATE SCHEMA bronze;
+GO
+CREATE SCHEMA silver;
+GO
+CREATE SCHEMA gold;
+GO
+
+IF OBJECT_ID ('bronze.crm_cust_info' , 'U') IS NOT NULL
+	DROP TABLE bronze.crm_cust_info;
+
+CREATE TABLE bronze.crm_cust_info (
+	cst_id INT,
+	cst_key NVARCHAR(50),
+	cst_firstname NVARCHAR(50),
+	cst_lastname NVARCHAR(50),
+	cst_material_status NVARCHAR(50),
+	cst_gndr NVARCHAR(50),
+	cst_create_date DATE
+);
+
+CREATE TABLE bronze.crm_prd_info (
+	prd_id		 INT,
+	prd_key		 NVARCHAR(50),
+	prd_nm		 NVARCHAR(50),
+	prd_cost	 INT,
+	prd_line	 NVARCHAR(50),
+	prd_start_dt DATETIME,
+	prd_end_dt	 DATETIME
+);
+
+CREATE TABLE bronze.crm_sales_details (
+	sls_ord_num NVARCHAR(50),
+	sls_prd_key NVARCHAR(50),
+	sls_cust_id INT,
+	sls_order_dt INT,
+	sls_ship_dt INT,
+	sls_due_dt INT,
+	sls_sales INT,
+	sls_quantity INT,
+	sls_price INT
+);
+
+CREATE TABLE bronze.erp_loc_a101 (
+	cid	  NVARCHAR(50),
+	cntry NVARCHAR(50)
+);
+
+CREATE TABLE bronze.erp_cust_az12 (
+	cid	  NVARCHAR(50),
+	bdate DATE,
+	gen NVARCHAR(50)
+);
+
+CREATE TABLE bronze.erp_px_cat_g1v2 (
+	id			NVARCHAR(50),
+	cat			NVARCHAR(50),
+	subcat		NVARCHAR(50),
+	maintenance NVARCHAR(50),
+);
+
+EXEC bronze.load_bronze
+
+CREATE OR ALTER PROCEDURE bronze.load_bronze AS
+BEGIN
+	DECLARE @start_time DATETIME, @end_time DATETIME, @batch_start_time DATETIME, @batch_end_time DATETIME;
+	BEGIN TRY
+	SET @batch_start_time = GETDATE();
+	PRINT '==================================================';
+	PRINT 'loading Bronze Layer';
+	PRINT '==================================================';
+
+	PRINT '-------------------';
+	PRINT 'loading CRM Tables';
+	PRINT '-------------------';
+
+	SET @start_time = GETDATE();
+	PRINT '>> Truncating Table: bronze.crm_cust_info';
+	TRUNCATE TABLE bronze.crm_cust_info;
+
+	PRINT '>> Inserting Data Into: bronze.crm_cust_info';
+	BULK INSERT bronze.crm_cust_info
+	FROM 'C:\Users\milto\Downloads\Source_crm\cust_info.csv'
+	WITH (
+		FIRSTROW = 2,
+		FIELDTERMINATOR = ',',
+		TABLOCK
+	);
+	SET @end_time = GETDATE();
+	PRINT '>> Load Duration: ' + CAST(DATEDIFF(second, @start_time, @end_time) AS NVARCHAR) + 'seconds';
+	PRINT '>> -------------';
+
+	SET @start_time = GETDATE();
+	PRINT '>> Truncating Table: bronze.crm_pdr_info';
+	TRUNCATE TABLE bronze.crm_prd_info;
+
+	PRINT '>> Inserting Data Into: bronze.crm_pdr_info';
+	BULK INSERT bronze.crm_prd_info
+	FROM 'C:\Users\milto\Downloads\Source_crm\prd_info.csv'
+	WITH (
+		FIRSTROW = 2,
+		FIELDTERMINATOR = ',',
+		TABLOCK
+	);
+	SET @end_time = GETDATE();
+	PRINT '>> Load Duration: ' + CAST(DATEDIFF(second, @start_time, @end_time) AS NVARCHAR) + 'seconds';
+	PRINT '>> -------------';
+
+	SET @start_time = GETDATE();
+	PRINT '>> Truncating Table: bronze.crm_sales_details';
+	TRUNCATE TABLE bronze.crm_sales_details;
+
+	PRINT '>> Inserting Data Into: bronze.crm_sales_details';
+	BULK INSERT bronze.crm_sales_details
+	FROM 'C:\Users\milto\Downloads\Source_crm\sales_details.csv'
+	WITH (
+		FIRSTROW = 2,
+		FIELDTERMINATOR = ',',
+		TABLOCK
+	);
+	SET @end_time = GETDATE();
+	PRINT '>> Load Duration: ' + CAST(DATEDIFF(second, @start_time, @end_time) AS NVARCHAR) + 'seconds';
+	PRINT '>> -------------';
+
+	PRINT '-------------------';
+	PRINT 'loading ERP Tables';
+	PRINT '-------------------';
+
+	SET @start_time = GETDATE();
+	PRINT '>> Truncating Table: bronze.erp_loc_a101';
+	TRUNCATE TABLE bronze.erp_loc_a101;
+
+	PRINT '>> Inserting Data Into: bronze.erp_loc_a101';
+	BULK INSERT bronze.erp_loc_a101
+	FROM 'C:\Users\milto\Downloads\Source_erp\loc_a101.csv'
+	WITH (
+		FIRSTROW = 2,
+		FIELDTERMINATOR = ',',
+		TABLOCK
+	);
+	SET @end_time = GETDATE();
+	PRINT '>> Load Duration: ' + CAST(DATEDIFF(second, @start_time, @end_time) AS NVARCHAR) + 'seconds';
+	PRINT '>> -------------';
+
+	SET @start_time = GETDATE();
+	PRINT '>> Truncating Table: bronze.erp_cust_az12';
+	TRUNCATE TABLE bronze.erp_cust_az12;
+
+	PRINT '>> Inserting Data Into: bronze.erp_cust_a101';
+	BULK INSERT bronze.erp_cust_az12
+	FROM 'C:\Users\milto\Downloads\Source_erp\cust_az12.csv'
+	WITH (
+		FIRSTROW = 2,
+		FIELDTERMINATOR = ',',
+		TABLOCK
+	);
+	SET @end_time = GETDATE();
+	PRINT '>> Load Duration: ' + CAST(DATEDIFF(second, @start_time, @end_time) AS NVARCHAR) + 'seconds';
+	PRINT '>> -------------';
+
+	SET @start_time = GETDATE();
+	PRINT '>> Truncating Table: bronze.erp_px_cat_g1v2';
+	TRUNCATE TABLE bronze.erp_px_cat_g1v2;
+
+	PRINT '>> Inserting Data Into: bronze.erp_px_cat_g1v2';
+	BULK INSERT bronze.erp_px_cat_g1v2
+	FROM 'C:\Users\milto\Downloads\Source_erp\px_cat_g1v2.csv'
+	WITH (
+		FIRSTROW = 2,
+		FIELDTERMINATOR = ',',
+		TABLOCK
+	);
+	SET @end_time = GETDATE();
+	PRINT '>> Load Duration: ' + CAST(DATEDIFF(second, @start_time, @end_time) AS NVARCHAR) + 'seconds';
+	PRINT '>> -------------';
+
+	SET @batch_end_time = GETDATE();
+	PRINT '============================'
+	PRINT 'Loading Bronze Layer is completed';
+	PRINT '	 -  Total Load Duration: ' + CAST(DATEDIFF(SECOND, @batch_start_time, @batch_end_time) AS VARCHAR) + 'Seconds';
+	PRINT '============================'
+	END TRY
+	BEGIN CATCH
+		PRINT '=================================='
+		PRINT 'ERROR OCCURED DURING LOADING BRONZE LAYER'
+		PRINT 'Error Message' + ERROR_MESSAGE();
+		PRINT 'Error Message' + CAST (ERROR_NUMBER() AS NVARCHAR);
+		PRINT 'Error Message' + CAST (ERROR_STATE() AS NVARCHAR);
+		PRINT '=================================='
+	END CATCH
+END
+
+SELECT * FROM bronze.crm_cust_info
+SELECT COUNT(*) FROM bronze.crm_cust_info
+
+EXECUTE bronze.load_bronze
+
+SELECT TOP (1000) [cst_id]
+	  ,[cst_key]
+	  ,[cst_firstname]
+	  ,[cst_lastname]
+	  ,[cst_material_status]
+	  ,[cst_gndr]
+	  ,[cst_create_date]
+  FROM [DataWarehouse].[bronze].[crm_cust_info]	
+
+  SELECT TOP (1000) [prd_id]
+	  ,[prd_key]
+	  ,[prd_nm]
+	  ,[prd_cost]
+	  ,[prd_line]
+	  ,[prd_start_dt]
+	  ,[prd_end_dt]
+  FROM [DataWarehouse].[bronze].[crm_prd_info]
+
+SELECT TOP (1000) [sls_ord_num]
+      ,[sls_prd_key]
+      ,[sls_cust_id]
+      ,[sls_order_dt]
+      ,[sls_ship_dt]
+      ,[sls_due_dt]
+      ,[sls_sales]
+      ,[sls_quantity]
+      ,[sls_price]
+  FROM [DataWarehouse].[bronze].[crm_sales_details]
+
+SELECT TOP 1000 * FROM bronze.crm_cust_info
+SELECT TOP 1000 * FROM bronze.crm_prd_info
+SELECT TOP 1000 * FROM bronze.crm_sales_details
+SELECT TOP 1000 * FROM bronze.erp_cust_az12;
+SELECT TOP 1000 * FROM bronze.crm_cust_info;
+SELECT TOP 1000 * FROM bronze.erp_loc_a101;
+SELECT TOP 1000 * FROM bronze.erp_px_cat_g1v2;
+
+IF OBJECT_ID('silver.crm_cust_info', 'U') IS NOT NULL
+	DROP TABLE silver.crm_cust_info;
+CREATE TABLE silver.crm_cust_info (
+	cst_id				INT,
+	cst_key				NVARCHAR(50),
+	cst_firstname		NVARCHAR(50),
+	cst_lastname		NVARCHAR(50),
+	cst_material_status	NVARCHAR(50),
+	cst_gndr			NVARCHAR(50),
+	cst_create_date		DATE,
+	dwh_create_date		DATETIME2 DEFAULT GETDATE()
+);
+
+IF OBJECT_ID('silver.crm_pdr_info', 'U') IS NOT NULL
+	DROP TABLE silver.crm_pdr_info;
+CREATE TABLE silver.crm_pdr_info (
+	prd_id				INT,
+	prd_key				NVARCHAR(50),
+	prd_nm				NVARCHAR(50),
+	prd_cost			INT,
+	prd_line			NVARCHAR(50),
+	prd_start_dt		DATETIME,
+	prd_end_dt			DATETIME,
+	dwh_create_date		DATETIME2 DEFAULT GETDATE()
+);
+
+IF OBJECT_ID('silver.crm_sales_details', 'U') IS NOT NULL
+	DROP TABLE silver.crm_sales_details;
+CREATE TABLE silver.crm_sales_details (
+	sls_ord_num			NVARCHAR(50),
+	sls_prd_key			NVARCHAR(50),
+	sls_cust_id			INT,
+	sls_order_dt		INT,
+	sls_ship_dt			INT,
+	sls_due_dt			INT,
+	sls_sales			INT,
+	sls_quantity		INT,
+	sls_price			INT,
+	dwh_create_date		DATETIME2 DEFAULT GETDATE()
+);
+
+IF OBJECT_ID('silver.crm_erp_loc_a101', 'U') IS NOT NULL
+	DROP TABLE silver.crm_erp_loc_a101;
+CREATE TABLE silver.crm_erp_loc_a101 (
+	cid					NVARCHAR(50),
+	cntry				NVARCHAR(50),
+	dwh_create_date		DATETIME2 DEFAULT GETDATE()
+);
+
+IF OBJECT_ID('silver.crm_erp_cust_az12', 'U') IS NOT NULL
+	DROP TABLE silver.crm_erp_cust_az12;
+CREATE TABLE silver.crm_erp_cust_az12 ( 
+	cid					NVARCHAR(50),
+	bdate				DATE,
+	gen					NVARCHAR(50),
+	dwh_create_date		DATETIME2 DEFAULT GETDATE()
+);
+
+IF OBJECT_ID('silver.crm_erp_px_cat_g1v2', 'U') IS NOT NULL
+	DROP TABLE silver.crm_ero_px_cat_g1v2;
+CREATE TABLE silver.crm_erp_px_cat_g1v2 (
+	id					NVARCHAR(50),
+	cat					NVARCHAR(50),
+	subcat				NVARCHAR(50),
+	maintenance			NVARCHAR(50),
+	dwh_create_date		DATETIME2 DEFAULT GETDATE()
+);
+
+-- Check for nulls or duplicates in primary key
+-- Expectation: no result
+
+SELECT
+cst_id,
+COUNT(*)
+FROM bronze.crm_cust_info
+GROUP BY cst_id
+HAVING COUNT(*) > 1 OR cst_id IS NULL
+
+SELECT
+*,
+ROW_NUMBER() OVER (PARTITION BY cst_id ORDER BY cst_create_date DESC) as flag_last
+FROM bronze.crm_cust_info
+WHERE cst_id = 29466
+
+
+SELECT
+*
+FROM (
+SELECT
+*,
+ROW_NUMBER() OVER (PARTITION BY cst_id ORDER BY cst_create_date DESC) as flag_last
+FROM bronze.crm_cust_info
+)t WHERE flag_last != 1
+
+SELECT
+*
+FROM (
+SELECT
+*,
+ROW_NUMBER() OVER (PARTITION BY cst_id ORDER BY cst_create_date DESC) as flag_last
+FROM bronze.crm_cust_info
+WHERE cst_id IS NOT NULL
+)t WHERE flag_last = 1
+
+-- Check for unwanted spaces
+-- Expectation: no results
+SELECT cst_firstname
+FROM bronze.crm_cust_info
+WHERE cst_firstname != TRIM(cst_firstname)
+
+INSERT INTO silver.crm_cust_info (
+	cst_id,
+	cst_key,
+	cst_firstname,
+	cst_lastname,
+	cst_material_status,
+	cst_gndr,
+	cst_create_date)
+
+SELECT
+cst_id,
+cst_key,
+TRIM(cst_firstname) AS cst_firstname,
+TRIM(cst_lastname) AS cst_lastname,
+CASE WHEN UPPER(TRIM(cst_material_status)) = 'S' THEN 'Single'
+	 WHEN UPPER(TRIM(cst_material_status)) = 'M' THEN 'Married'
+	 ELSE 'n/a'
+END cst_material_status, -- Normalize material status values to readable format
+
+CASE WHEN UPPER(TRIM(cst_gndr)) = 'F' THEN 'Female'
+	 WHEN UPPER(TRIM(cst_gndr)) = 'M' THEN 'Male' 
+	 ELSE 'n/a'
+END cst_gndr, -- Normalize gender values to readable format
+cst_create_date
+FROM (
+	SELECT
+	*,
+	ROW_NUMBER() OVER (PARTITION BY cst_id ORDER BY cst_create_date DESC) as Flag_last
+	FROM bronze.crm_cust_info
+	WHERE cst_id IS NOT NULL
+)t WHERE Flag_last = 1 -- Select the most recent record per customer
+
+-- Expectation: no results
+SELECT cst_key
+FROM bronze.crm_cust_info
+WHERE cst_key != TRIM(cst_key)
+
+-- Data standardization & consistency
+SELECT DISTINCT cst_gndr
+FROM bronze.crm_cust_info
+
+SELECT DISTINCT cst_material_status
+FROM bronze.crm_cust_info
+
+-- Check for nulls or duplicates in primary key
+-- Expectation: no result
+
+SELECT
+cst_id,
+COUNT(*)
+FROM silver.crm_cust_info 
+GROUP BY cst_id
+HAVING COUNT(*) > 1 OR cst_id IS NULL
+
+-- Expectation: no results
+SELECT cst_firstname
+FROM silver.crm_cust_info
+WHERE cst_firstname != TRIM(cst_firstname)
+
+-- Data standardization & consistency
+SELECT DISTINCT cst_gndr
+FROM silver.crm_cust_info
+
+SELECT * FROM silver.crm_cust_info
+
+SELECT
+	prd_id,
+	prd_key,
+	REPLACE(SUBSTRING(prd_key, 1, 5), '-', '_') AS cat_id,
+	prd_nm,
+	prd_line,
+	prd_cost,
+	prd_start_dt,
+	prd_end_dt
+FROM bronze.crm_prd_info
+WHERE REPLACE(SUBSTRING(prd_key, 1, 5), '-', '_') NOT IN
+(SELECT distinct id from bronze.erp_px_cat_g1v2)
+
+INSERT INTO silver.crm_prd_info (
+	prd_id,		
+	cat_id,		 
+	prd_key,		 
+	prd_nm,	 
+	prd_cost,	 
+	prd_line,	 
+	prd_start_dt, 
+	prd_end_dt
+)	
+SELECT
+	prd_id,
+	REPLACE(SUBSTRING(prd_key, 1, 5), '-', '_') AS cat_id, -- Extract category ID
+	SUBSTRING(prd_key, 7, LEN(prd_key)) AS prd_key,		   -- Extract product key
+	prd_nm,
+	ISNULL(prd_cost, 0) AS prd_cost, 
+	CASE WHEN UPPER(TRIM(prd_line)) = 'M' THEN 'Mountain'
+		 WHEN UPPER(TRIM(prd_line)) = 'R' THEN 'Road'
+		 WHEN UPPER(TRIM(prd_line)) = 'S' THEN 'other Sales'
+		 WHEN UPPER(TRIM(prd_line)) = 'T' THEN 'Touring'
+		 ELSE 'n/a'
+	END AS prd_line, -- Map product line codes to descriptive values
+	CAST(prd_start_dt AS DATE) AS prd_start_dt, -- Calculate end date one day before the next start date
+	CAST(LEAD(prd_start_dt) OVER (PARTITION BY prd_key ORDER BY prd_start_dt)-1 AS DATE) AS prd_end_dt 
+FROM bronze.crm_prd_info 
+WHERE SUBSTRING(prd_key, 7, LEN(prd_key)) NOT IN ( 
+SELECT sls_prd_key FROM bronze.crm_sales_details)
+
+SELECT
+prd_id,
+COUNT(*)
+FROM silver.crm_prd_info
+GROUP BY prd_id
+HAVING COUNT(*) > 1 OR prd_id IS NULL
+
+SELECT prd_nm
+FROM silver.crm_prd_info
+WHERE prd_nm != TRIM(prd_nm)
+
+SELECT prd_cost
+FROM silver.crm_prd_info
+WHERE prd_cost < 0 OR prd_cost IS NULL
+
+SELECT DISTINCT prd_line
+FROM silver.crm_prd_info
+
+SELECT *
+FROM silver.crm_prd_info
+WHERE prd_end_dt < prd_start_dt
+
+SELECT *
+FROM silver.crm_prd_info
+
+-- Check for unwanted spaces
+-- Expectation: no results
+SELECT prd_nm
+FROM bronze.crm_prd_info
+WHERE prd_nm != TRIM(prd_nm)
+
+-- Check for nulls or negative numbers
+-- Expectation: no results
+SELECT prd_cost
+FROM bronze.crm_prd_info
+WHERE prd_cost < 0 OR prd_cost IS NULL
+
+-- Data standardization & consistency
+SELECT DISTINCT prd_line
+FROM bronze.crm_prd_info
+
+-- Check for invalid date orders
+SELECT *
+FROM bronze.crm_prd_info
+WHERE prd_end_dt < prd_start_dt
+
+-- Check for nulls or duplicates in primary key
+-- Expectation: no result
+
+SELECT
+prd_id,
+COUNT(*)
+FROM bronze.crm_prd_info
+GROUP BY prd_id
+HAVING COUNT(*) > 1 OR prd_id IS NULL
+
+SELECT
+prd_id,
+prd_key,
+prd_nm,
+prd_start_dt,
+prd_end_dt,
+LEAD(prd_start_dt) OVER (PARTITION BY prd_key ORDER BY prd_start_dt) AS prd_end_dt_test
+FROM bronze.crm_prd_info
+WHERE prd_key IN ('AC-HE-HL-U509-R', 'AC-HE-HL-U509')
+
+IF OBJECT_ID ('silver.crm_pdr_info', 'U') IS NOT NULL
+	DROP TABLE silver.crm_pdr_info;
+CREATE TABLE silver.crm_prd_info (
+	prd_id		 INT,
+	cat_id		 NVARCHAR(50),
+	prd_key		 NVARCHAR(50),
+	prd_nm		 NVARCHAR(50),
+	prd_cost	 INT,
+	prd_line	 NVARCHAR(50),
+	prd_start_dt DATE,
+	prd_end_dt	 DATE,
+	dwh_create_date DATETIME2 DEFAULT GETDATE()
+);
+
+SELECT
+sls_ord_num,
+sls_prd_key,
+sls_cust_id,
+CASE WHEN sls_order_dt = 0 OR LEN(sls_order_dt) != 8 THEN NULL
+	 ELSE CAST(CAST(sls_order_dt AS VARCHAR) AS DATE)
+END AS sls_order_dt,
+CASE WHEN sls_ship_dt = 0 OR LEN(sls_ship_dt) != 8 THEN NULL
+	 ELSE CAST(CAST(sls_ship_dt AS VARCHAR) AS DATE)
+END AS sls_ship_dt,
+CASE WHEN sls_due_dt = 0 OR LEN(sls_due_dt) != 8 THEN NULL
+	 ELSE CAST(CAST(sls_due_dt AS VARCHAR) AS DATE)
+END AS sls_due_dt,
+sls_sales,
+sls_quantity,
+sls_price
+FROM bronze.crm_sales_details
+WHERE sls_cust_id NOT IN (SELECT cst_id FROM silver.crm_cust_info)
+WHERE sls_ord_num != TRIM(sls_ord_num)
+
+-- Check for invalid dates
+SELECT
+NULLIF(sls_order_dt,0) sls_order_dt
+FROM bronze.crm_sales_details
+WHERE sls_order_dt <= 0 
+OR LEN(sls_order_dt) != 8
+OR sls_order_dt > 20500101
+OR sls_order_dt < 19000101
+
+SELECT
+NULLIF(sls_ship_dt,0) sls_ship_dt
+FROM bronze.crm_sales_details
+WHERE sls_ship_dt <= 0 
+OR LEN(sls_ship_dt) != 8
+OR sls_ship_dt > 20500101
+OR sls_ship_dt < 19000101
+
+SELECT
+NULLIF(sls_due_dt,0) sls_due_dt
+FROM bronze.crm_sales_details
+WHERE sls_due_dt <= 0 
+OR LEN(sls_due_dt) != 8
+OR sls_due_dt > 20500101
+OR sls_due_dt < 19000101
+
+-- Check for invalid date orders
+SELECT
+*
+FROM bronze.crm_sales_details
+WHERE sls_order_dt > sls_ship_dt OR sls_order_dt > sls_due_dt
+
+-- Check data consistency: between sales, quantity, and price
+-- >> Sales = quantity * price
+-- >> values must not be NULL, zero, or negative
+
+SELECT DISTINCT 
+sls_sales AS old_sls_sales,
+sls_quantity,
+sls_price as old_sls_price,
+CASE WHEN sls_sales IS NULL OR sls_sales <=0 OR sls_sales != sls_quantity * ABS(sls_price)
+		THEN sls_quantity * ABS(sls_price)
+	 ELSE sls_sales
+END AS sls_sales,
+CASE WHEN sls_price IS NULL OR sls_price <=0
+		THEN sls_sales / NULLIF(sls_quantity, 0)
+	 ELSE sls_price
+END AS sls_price
+FROM bronze.crm_sales_details
+WHERE sls_sales != sls_quantity * sls_price
+OR sls_sales IS NULL OR sls_quantity IS NULL OR sls_price IS NULL
+OR sls_sales <=0 OR sls_quantity <=0 OR sls_price <=0
+ORDER BY sls_sales, sls_quantity, sls_price 
+
+IF OBJECT_ID ('silver.crm_sales_details', 'U') IS NOT NULL
+	DROP TABLE silver.crm_sales_details;
+CREATE TABLE silver.crm_sales_details (
+	sls_ord_num		NVARCHAR(50),
+	sls_prd_key		NVARCHAR(50),
+	sls_cust_id		INT,
+	sls_order_dt	DATE,
+	sls_ship_dt		DATE,
+	sls_due_dt		DATE,
+	sls_sales		INT,
+	sls_quantity	INT,
+	sls_price		INT,
+	dwh_create_date DATETIME2 DEFAULT GETDATE()
+);
+
+INSERT INTO silver.crm_sales_details (
+	sls_ord_num,
+	sls_prd_key,
+	sls_cust_id,	
+	sls_order_dt,
+	sls_ship_dt,	
+	sls_due_dt,	
+	sls_sales,	
+	sls_quantity,
+	sls_price
+)
+SELECT
+sls_ord_num,
+sls_prd_key,
+sls_cust_id,
+CASE WHEN sls_order_dt = 0 OR LEN(sls_order_dt) != 8 THEN NULL
+	 ELSE CAST(CAST(sls_order_dt AS VARCHAR) AS DATE)
+END AS sls_order_dt,
+CASE WHEN sls_ship_dt = 0 OR LEN(sls_ship_dt) != 8 THEN NULL
+	 ELSE CAST(CAST(sls_ship_dt AS VARCHAR) AS DATE)
+END AS sls_ship_dt,
+CASE WHEN sls_due_dt = 0 OR LEN(sls_due_dt) != 8 THEN NULL
+	 ELSE CAST(CAST(sls_due_dt AS VARCHAR) AS DATE)
+END AS sls_due_dt,
+CASE WHEN sls_sales IS NULL OR sls_sales <=0 OR sls_sales != sls_quantity * ABS(sls_price)
+		THEN sls_quantity * ABS(sls_price)
+	 ELSE sls_sales
+END AS sls_sales, -- Recalculate sales if original value is missing or incorrect
+sls_quantity,
+CASE WHEN sls_price IS NULL OR sls_price <=0
+		THEN sls_sales / NULLIF(sls_quantity, 0)
+	 ELSE sls_price
+END AS sls_price -- derive price of original value is invalid
+FROM bronze.crm_sales_details
+
+-- Check for invalid date orders
+SELECT
+*
+FROM silver.crm_sales_details
+WHERE sls_order_dt > sls_ship_dt OR sls_order_dt > sls_due_dt
+
+SELECT
+sls_sales,
+sls_quantity,
+sls_price
+FROM silver.crm_sales_details
+WHERE sls_sales != sls_quantity * sls_price
+OR sls_sales IS NULL OR sls_quantity IS NULL OR sls_price IS NULL
+OR sls_sales <=0 OR sls_quantity <=0 OR sls_price <=0
+ORDER BY sls_sales, sls_quantity, sls_price 
+
+SELECT * FROM Silver.crm_sales_details
+
+SELECT
+cid,
+CASE WHEN cid LIKE 'NAS%' THEN SUBSTRING(cid, 4, LEN(cid))
+	 ELSE cid
+END cid,
+bdate,
+gen
+FROM bronze.erp_cust_az12
+WHERE CASE WHEN cid LIKE 'NAS%' THEN SUBSTRING(cid, 4, LEN(cid))
+	 ELSE cid
+END NOT IN (SELECT DISTINCT cst_key FROM silver.crm_cust_info)
+
+SELECT * FROM [silver].[crm_cust_info]
+
+-- Identity out-of-range dates
+
+SELECT DISTINCT
+bdate
+FROM bronze.erp_cust_az12
+WHERE bdate < '1924-01-01' OR bdate > GETDATE()
+
+-- data standardization & consistency
+SELECT DISTINCT
+gen,
+CASE WHEN UPPER(TRIM(gen)) IN ('F', 'FEMALE') THEN 'Female'
+	WHEN UPPER(TRIM(gen)) IN ('M', 'MALE') THEN 'Male'
+		  ELSE 'n/a'
+END AS gen
+FROM bronze.erp_cust_az12
+
+SELECT DISTINCT
+gen
+FROM silver.erp._cust_az12
+
+SELECT * FROM silver.erp_cust_az12
+
+SELECT
+cid,
+CASE WHEN cid LIKE 'NAS%' THEN SUBSTRING(cid, 4, LEN(cid))
+	 ELSE cid
+END cid,
+CASE WHEN bdate > GETDATE() THEN NULL
+	 ELSE bdate
+END AS bdate,
+gen
+FROM bronze.erp_cust_az12
+
+INSERT INTO silver.erp_cust_az12 (cid, bdate, gen)
+SELECT
+CASE WHEN cid LIKE 'NAS%' THEN SUBSTRING(cid, 4, LEN(cid)) -- Remove 'NAS' prefix if present
+	 ELSE cid
+END AS cid,
+CASE WHEN bdate > GETDATE() THEN NULL
+	 ELSE bdate
+END AS bdate, -- set future birthdates to NULL
+CASE WHEN UPPER(TRIM(gen)) IN ('F', 'FEMALE') THEN 'Female'
+	 WHEN UPPER(TRIM(gen)) IN ('M', 'MALE') THEN 'Male'
+	 ELSE 'n/a'
+END AS gen -- normalize gender values and handle unknown cases
+FROM bronze.erp_cust_az12
+
+INSERT INTO silver.crm_erp_loc_a101
+(cid, cntry)
+SELECT
+REPLACE(cid, '_', '') cid,
+CASE WHEN TRIM(cntry) = 'DE' THEN 'Germany'
+	 WHEN TRIM(cntry) IN ('US', 'USA') THEN 'United States'
+	 WHEN TRIM(cntry) = '' OR cntry IS NULL THEN 'n/a'
+	 ELSE TRIM(cntry)
+END AS cntry
+FROM bronze.erp_loc_a101
+
+-- Data standardization & consistency
+SELECT DISTINCT 
+cntry AS old_cntry,
+CASE WHEN TRIM(cntry) = 'DE' THEN 'Germany'
+	 WHEN TRIM(cntry) IN ('US', 'USA') THEN 'United States'
+	 WHEN TRIM(cntry) = '' OR cntry IS NULL THEN 'n/a'
+	 ELSE TRIM(cntry)
+END AS cntry -- normalize and handle missing or blank country codes	
+FROM bronze.erp_loc_a101
+ORDER BY cntry
+
+SELECT DISTINCT cntry
+FROM silver.crm_erp_loc_a101
+ORDER BY cntry
+
+SELECT * FROM silver.crm_erp_loc_a101
+
+INSERT INTO silver.crm_erp_px_cat_g1v2
+(id, cat, subcat, maintenance)
+SELECT
+id,
+cat,
+subcat,
+maintenance
+FROM bronze.erp_px_cat_g1v2
+
+-- Check for unwanted spaces
+SELECT * FROM bronze.erp_px_cat_g1v2
+WHERE cat != TRIM(cat) OR subcat != TRIM(subcat) OR maintenance != TRIM(maintenance)
+
+-- data standardization & consistency
+SELECT DISTINCT
+maintenance
+FROM bronze.erp_px_cat_g1v2
+
+SELECT * FROM silver.crm_erp_px_cat_g1v2
+
+EXEC bronze.load_bronze
+
+SELECT
+	ci.cst_id,
+	ci.cst_key,
+	ci.cst_firstname,
+	ci.cst_lastname,
+	ci.cst_material_status,
+	ci.cst_gndr,
+	ci.cst_create_date
+FROM silver.crm_cust_info ci 
+
+SELECT cst_id, COUNT(*) FROM
+(SELECT
+	ci.cst_id,
+	ci.cst_key,
+	ci.cst_firstname,
+	ci.cst_lastname,
+	ci.cst_material_status,
+	ci.cst_gndr,
+	ci.cst_create_date,
+	ca.bdate,
+	ca.gen,
+	la.cntry
+FROM silver.crm_cust_info ci 
+LEFT JOIN silver.crm_erp_cust_az12 ca
+ON		  ci.cst_key = ca.cid
+LEFT JOIN silver.crm_erp_loc_a101 la
+ON		  ci.cst_key = la.cid
+)t GROUP BY cst_id
+HAVING COUNT(*) >1
+
+SELECT * FROM gold.dim_customers
