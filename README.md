@@ -12,7 +12,7 @@ Database Optimization: Clustered / Nonclustered indexes <> Columnstore indexes <
 Data Warehouse : Bronze / Silver / Gold layers ' Fact and dimension concepts ' PrimarySELECT DB_NAME() AS BaseActual;
 
 querying_analysis
-- [📁 Haz clic aquí para ver y descargar los pantallazos](./screenshots_SQL)
+- [📁 Haz clic aquí para ver y descargar los pantallazos](./análisisdeconsultas)
   
 advanced_sql_window_functions
 
