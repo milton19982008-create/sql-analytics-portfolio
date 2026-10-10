@@ -13,6 +13,7 @@ Data Warehouse : Bronze / Silver / Gold layers ' Fact and dimension concepts ' P
 
 querying_analysis
 - [📁 Haz clic aquí para ver y descargar los pantallazos](./screenshots_SQL)
+  
 advanced_sql_window_functions
 
 data_quality
