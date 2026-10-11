@@ -15,6 +15,7 @@ querying_analysis
 * [📁 Ver evidencias de Análisis de Consultas](./querying_analysis)
   
 advanced_sql_window_functions
+* [📁 Ver evidencias de Análisis de Consultas](./advanced_sql_window_functions) 
 
 data_quality
 
