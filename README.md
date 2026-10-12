@@ -21,6 +21,7 @@ data_quality
 * [📁 Ver evidencias de Análisis de Consultas](./data_quality) 
 
 database_optimization
+* [📁 Ver evidencias de Análisis de Consultas](./database_optimization)
 
 data_warehouse
 
