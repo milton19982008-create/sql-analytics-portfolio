@@ -24,6 +24,8 @@ database_optimization
 * [📁 Ver evidencias de Análisis de Consultas](./database_optimization)
 
 data_warehouse
+* [📁 Ver evidencias de Análisis de Consultas](./data_warehouse)
+
 
 * [📄 Ver y Descargar SQL Data.txt](./SQL%20Data.txt)
 
